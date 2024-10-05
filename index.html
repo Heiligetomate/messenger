@@ -2,16 +2,22 @@
 <html lang="en">
     <head>
         <title>WebSocket demo</title>
+
         <link href="index.css" rel="stylesheet">
     </head>
     <body>
-        <div class="buttons">
+        <label for="button-container"></label>
+        <div class="buttons" id="button-container">
             <div class="minus button">-</div>
             <div class="value">?</div>
             <div class="plus button">+</div>
         </div>
+        <div id="name-box" class="name-box">name: </div>
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username">
+        <input type="text" id="username" class="username">
+        <button class="button" id="user-confirm">confirm</button>
+
+
         <div class="state">
             <span class="users">?</span> online
         </div>

@@ -1,6 +1,7 @@
 body {
     font-family: "Courier New", sans-serif;
     text-align: center;
+    background: black;
 }
 .buttons {
     font-size: 4em;
@@ -20,14 +21,30 @@ body {
     user-select: none;
 }
 .minus {
-    color: red;
+    color: white;
 }
 .plus {
-    color: green;
+    color: white;
 }
 .value {
     min-width: 2em;
+    color: white;
 }
 .state {
     font-size: 2em;
+    color: white;
+}
+.username {
+    font-size: 1em;
+    color: white;
+    background: black;
+}
+.user-confirm {
+    font-size: 1em;
+    color: white;
+}
+.name-box {
+    margin: 1em;
+    font-size: 2em;
+    color: white;
 }

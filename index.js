@@ -13,31 +13,26 @@ window.addEventListener("DOMContentLoaded", () => {
     websocket.send(JSON.stringify({ action: "plus" }));
   });
 
+  //document.querySelector("#user-confirm").addEventListener("click", () => {
+  //  websocket.send(JSON.stringify({ action: "username" }));
+  //});
 
-  //websocket.onmessage = ({ data }) => {
-  //  const event = JSON.parse(data);
-  //  switch (event.type) {
-  //    case "value":
-  //      document.querySelector(".value").textContent = event.value;
-  //      break;
-  //    case "users":
-  //      const users = `${event.count} user${event.count == 1 ? "" : "s"}`;
-  //      document.querySelector(".users").textContent = users;
-  //      break;
-  //    default:
-  //      console.error("unsupported event", event);
-  //  }
-  //};
+  document.querySelector("#user-confirm").addEventListener("click", () => {
+    let usernameContent = document.getElementById("username").value;
+    document.getElementById("username").value = "";
+    document.querySelector("#name-box").textContent = "name: " + usernameContent;
+    websocket.send(JSON.stringify({ action: "username", username: usernameContent }));
+  });
 
-  //websocket.onmessage = (x) => onMessageReceiced(x, "hello");
-  websocket.onmessage = (x) => onMessageReceiced(x);
-  websocket.onmessage = onMessageReceiced;
 
-  function onMessageReceiced({data}){
+  websocket.onmessage = (x) => onMessageReceived(x);
+  websocket.onmessage = onMessageReceived;
+
+  function onMessageReceived({data}){
     const event = JSON.parse(data);
     switch (event.type) {
       case "value":
-        document.querySelector(".value").textContent = event.value + "hello";
+        document.querySelector(".value").textContent = event.value;
         break;
       case "users":
         //const users = `${event.count} user${event.count == 1 ? "" : "s"}`;

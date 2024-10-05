@@ -37,6 +37,8 @@ async def counter(websocket):
             elif event["action"] == "plus":
                 VALUE += 1
                 broadcast(USERS, value_event())
+            elif event["action"] == "username":
+                print(event["username"])
             else:
                 logging.error("unsupported event: %s", event)
     finally:
