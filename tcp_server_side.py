@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import time
 import asyncio
 import json
 import logging
@@ -32,14 +31,8 @@ async def counter(websocket):
         # Manage state changes
         async for message in websocket:
             event = json.loads(message)
-            print(event)
             if event["action"] == "minus":
                 VALUE -= 1
-                time_client = event["message"]["timestamp"]
-                time_server = time.time()
-                print(time_client)
-                print(time_server)
-                print(time_server * 1000 - time_client)
                 broadcast(USERS, value_event())
             elif event["action"] == "plus":
                 VALUE += 1
