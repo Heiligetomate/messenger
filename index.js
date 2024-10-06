@@ -21,8 +21,9 @@ window.addEventListener("DOMContentLoaded", () => {
 document.querySelector("#confirm-send").addEventListener("click", () => {
   let message = document.getElementById("send-message").value
   let msg = { action: "message", message: message, sender: currentUser };
-  if (currentUser !== ""){
+  if (currentUser !== "" && message !== ""){
     websocket.send(JSON.stringify(msg));
+    document.getElementById("send-message").value = "";
   }
 
 });
