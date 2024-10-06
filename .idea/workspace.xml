@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="61d9635b-2543-40f9-a9c4-a395da0d92e3" name="Changes" comment="- rm: time">
+    <list default="true" id="61d9635b-2543-40f9-a9c4-a395da0d92e3" name="Changes" comment="- add gitignore">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tcp_server_side.py" beforeDir="false" afterPath="$PROJECT_DIR$/tcp_server_side.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +69,7 @@
       <recent name="C:\Users\heili\PycharmProjects\messenger" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.tcp_server_side">
+  <component name="RunManager" selected="JavaScript Debug.index.html">
     <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/messenger/index.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
@@ -127,8 +124,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.tcp_server_side" />
         <item itemvalue="JavaScript Debug.index.html" />
+        <item itemvalue="Python.tcp_server_side" />
         <item itemvalue="Python.tcp_client" />
         <item itemvalue="Node.js.index.js" />
         <item itemvalue="Python.tcp_server_side" />
@@ -153,7 +150,8 @@
       <workItem from="1727886355501" duration="8260000" />
       <workItem from="1727972336767" duration="601000" />
       <workItem from="1728130891596" duration="5505000" />
-      <workItem from="1728214511629" duration="6827000" />
+      <workItem from="1728214511629" duration="8512000" />
+      <workItem from="1728236471697" duration="925000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -171,7 +169,31 @@
       <option name="project" value="LOCAL" />
       <updated>1728142349568</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="-add: global chat&#10;-add: time and user&#10;-rm: old +- buttons&#10;-add: cant write message without name">
+      <option name="closed" value="true" />
+      <created>1728222459439</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1728222459439</updated>
+    </task>
+    <task id="LOCAL-00004" summary="-add: global chat&#10;-add: time and user&#10;-rm: old +- buttons&#10;-add: cant write message without name">
+      <option name="closed" value="true" />
+      <created>1728237247404</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1728237247404</updated>
+    </task>
+    <task id="LOCAL-00005" summary="- add gitignore">
+      <option name="closed" value="true" />
+      <created>1728237362089</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1728237362089</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -191,7 +213,9 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init" />
     <MESSAGE value="- rm: time" />
-    <option name="LAST_COMMIT_MESSAGE" value="- rm: time" />
+    <MESSAGE value="-add: global chat&#10;-add: time and user&#10;-rm: old +- buttons&#10;-add: cant write message without name" />
+    <MESSAGE value="- add gitignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="- add gitignore" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -233,6 +257,6 @@
     <SUITE FILE_PATH="coverage/messenger$tcp_client_receiver.coverage" NAME="tcp_client_receiver Coverage Results" MODIFIED="1727894114206" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/messenger$tcp_client.coverage" NAME="tcp_client Coverage Results" MODIFIED="1727972411437" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/messenger$tcp_cient.coverage" NAME="tcp_client Coverage Results" MODIFIED="1727892160280" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/messenger$tcp_server_side.coverage" NAME="tcp_server_side Coverage Results" MODIFIED="1728222315060" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/messenger$tcp_server_side.coverage" NAME="tcp_server_side Coverage Results" MODIFIED="1728236473933" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
