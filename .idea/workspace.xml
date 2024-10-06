@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="61d9635b-2543-40f9-a9c4-a395da0d92e3" name="Changes" comment="init">
+    <list default="true" id="61d9635b-2543-40f9-a9c4-a395da0d92e3" name="Changes" comment="- rm: time">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/index.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
@@ -43,27 +43,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "JavaScript Debug.index.html.executor": "Run",
-    "Python.tcp_cient.executor": "Debug",
-    "Python.tcp_client.executor": "Run",
-    "Python.tcp_client_receiver.executor": "Run",
-    "Python.tcp_server_side.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "playground",
-    "last_opened_file_path": "C:/Users/heili/PycharmProjects/messenger",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
+    &quot;Python.tcp_cient.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.tcp_client.executor&quot;: &quot;Run&quot;,
+    &quot;Python.tcp_client_receiver.executor&quot;: &quot;Run&quot;,
+    &quot;Python.tcp_server_side.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;playground&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/heili/PycharmProjects/messenger&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\heili\PycharmProjects\messenger" />
@@ -128,9 +128,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.tcp_server_side" />
+        <item itemvalue="JavaScript Debug.index.html" />
         <item itemvalue="Python.tcp_client" />
         <item itemvalue="Node.js.index.js" />
-        <item itemvalue="JavaScript Debug.index.html" />
         <item itemvalue="Python.tcp_server_side" />
       </list>
     </recent_temporary>
@@ -153,6 +153,7 @@
       <workItem from="1727886355501" duration="8260000" />
       <workItem from="1727972336767" duration="601000" />
       <workItem from="1728130891596" duration="5505000" />
+      <workItem from="1728214511629" duration="6827000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -162,7 +163,15 @@
       <option name="project" value="LOCAL" />
       <updated>1728136000183</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="- rm: time">
+      <option name="closed" value="true" />
+      <created>1728142349568</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1728142349568</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -181,7 +190,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init" />
-    <option name="LAST_COMMIT_MESSAGE" value="init" />
+    <MESSAGE value="- rm: time" />
+    <option name="LAST_COMMIT_MESSAGE" value="- rm: time" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -223,6 +233,6 @@
     <SUITE FILE_PATH="coverage/messenger$tcp_client_receiver.coverage" NAME="tcp_client_receiver Coverage Results" MODIFIED="1727894114206" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/messenger$tcp_client.coverage" NAME="tcp_client Coverage Results" MODIFIED="1727972411437" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/messenger$tcp_cient.coverage" NAME="tcp_client Coverage Results" MODIFIED="1727892160280" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/messenger$tcp_server_side.coverage" NAME="tcp_server_side Coverage Results" MODIFIED="1728141261441" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/messenger$tcp_server_side.coverage" NAME="tcp_server_side Coverage Results" MODIFIED="1728222315060" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

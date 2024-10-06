@@ -3,11 +3,13 @@ body {
     text-align: center;
     background: black;
 }
+
 .buttons {
     font-size: 4em;
     display: flex;
     justify-content: center;
 }
+
 .button, .value {
     line-height: 1;
     padding: 2rem;
@@ -16,35 +18,64 @@ body {
     min-height: 1em;
     min-width: 1em;
 }
+
 .button {
     cursor: pointer;
     user-select: none;
 }
+
 .minus {
     color: white;
 }
+
 .plus {
     color: white;
 }
+
 .value {
     min-width: 2em;
     color: white;
 }
+
 .state {
     font-size: 2em;
     color: white;
 }
+
 .username {
     font-size: 1em;
     color: white;
     background: black;
 }
+
 .user-confirm {
     font-size: 1em;
     color: white;
 }
+
 .name-box {
     margin: 1em;
     font-size: 2em;
     color: white;
+}
+
+.legend-messages{
+    color: white;
+    font-size: 2em;
+}
+
+.messages{
+    color: white;
+}
+
+.fieldset{
+    margin: 4em;
+}
+
+.p-left {
+    text-align: left;
+}
+
+.p-right {
+    text-align: right;
 }

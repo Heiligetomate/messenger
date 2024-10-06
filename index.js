@@ -1,43 +1,55 @@
+let currentUser = "";
+
+  function createParagraph(content){
+    	let p = document.createElement("p");
+    	p.append(content);
+        return p;
+    }
+
+  function addContent(content, elementId, isOwnMessage){
+        let elem = document.getElementById(elementId);
+        let p = createParagraph(content)
+        let cssClass = isOwnMessage ? "p-left" : "p-right";
+        p.classList.add(cssClass);
+        elem.append(p)
+  }
+
 window.addEventListener("DOMContentLoaded", () => {
   const websocket = new WebSocket("ws://localhost:6789/");
 
-  document.querySelector(".minus").addEventListener("click", () => {
-    let message = { content: "abziehen", timestamp: Date.now() };
-    let sendMessage = { action: "minus", user: "icke", message: message };
-    let json = JSON.stringify(sendMessage);
-    console.log(json);
-    websocket.send(json);
-  });
 
-  document.querySelector(".plus").addEventListener("click", () => {
-    websocket.send(JSON.stringify({ action: "plus" }));
-  });
+document.querySelector("#confirm-send").addEventListener("click", () => {
+  let message = document.getElementById("send-message").value
+  let msg = { action: "message", message: message, sender: currentUser };
+  if (currentUser !== ""){
+    websocket.send(JSON.stringify(msg));
+  }
 
-  //document.querySelector("#user-confirm").addEventListener("click", () => {
-  //  websocket.send(JSON.stringify({ action: "username" }));
-  //});
+});
 
-  document.querySelector("#user-confirm").addEventListener("click", () => {
-    let usernameContent = document.getElementById("username").value;
-    document.getElementById("username").value = "";
-    document.querySelector("#name-box").textContent = "name: " + usernameContent;
-    websocket.send(JSON.stringify({ action: "username", username: usernameContent }));
-  });
+document.querySelector("#user-confirm").addEventListener("click", () => {
+  currentUser = document.getElementById("username").value;
+  document.getElementById("username").value = "";
+  document.querySelector("#name-box").textContent = "name: " + currentUser;
+  websocket.send(JSON.stringify({ action: "username", username: currentUser }));
+});
 
 
-  websocket.onmessage = (x) => onMessageReceived(x);
   websocket.onmessage = onMessageReceived;
 
   function onMessageReceived({data}){
     const event = JSON.parse(data);
     switch (event.type) {
-      case "value":
-        document.querySelector(".value").textContent = event.value;
-        break;
       case "users":
         //const users = `${event.count} user${event.count == 1 ? "" : "s"}`;
         const users = `${event.count} user${event.count == 1 ? "" : "s"}`;
         document.querySelector(".users").textContent = users;
+        break;
+      case "message":
+        console.log(event.sender);
+        console.log(currentUser);
+        let isSelf = event.sender === currentUser;
+        addContent(`${event.sender}(${event.timestamp}) : ${event.message}`, "messages", isSelf);
         break;
       default:
         console.error("unsupported event", event);

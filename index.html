@@ -6,12 +6,7 @@
         <link href="index.css" rel="stylesheet">
     </head>
     <body>
-        <label for="button-container"></label>
-        <div class="buttons" id="button-container">
-            <div class="minus button">-</div>
-            <div class="value">?</div>
-            <div class="plus button">+</div>
-        </div>
+
         <div id="name-box" class="name-box">name: </div>
         <label for="username">Username:</label>
         <input type="text" id="username" class="username">
@@ -23,4 +18,18 @@
         </div>
         <script src="index.js"></script>
     </body>
+
+    <fieldset class="fieldset">
+	    <legend class="legend-messages">messages</legend>
+	    <div id=messages class="messages">
+            <p></p>
+        </div>
+
+
+    </fieldset>
+    <label>
+        <input id="send-message" type="text">
+        <button id="confirm-send">send message</button>
+    </label>
+
 </html>
