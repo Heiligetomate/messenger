@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  websocket-service:
+    build:
+      context: ./backend
+    container_name: messenger-juri-backend
+    image: hansendockedin/messenger-juri-backend:latest
+    ports:
+      - "6789:6789"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: messenger-juri-frontend
+    image: hansendockedin/messenger-juri-frontend:latest
+    ports:
+      - "8080:80"
+    depends_on:
+      - websocket-service
+    environment:
+      - SERVICE_URL=ws://websocket-service:6789

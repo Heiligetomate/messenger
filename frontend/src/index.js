@@ -15,7 +15,9 @@ let currentUser = "";
   }
 
 window.addEventListener("DOMContentLoaded", () => {
-  const websocket = new WebSocket("ws://localhost:6789/");
+  let url = window.env.SERVICE_URL || "ws://localhost:6789/";
+  console.log("WebSocket URL:", url);
+  const websocket = new WebSocket(url);
 
 
 document.querySelector("#confirm-send").addEventListener("click", () => {
