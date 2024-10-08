@@ -8,7 +8,7 @@ COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install websockets
 
-EXPOSE 6789
+#EXPOSE 6789
 
 ENV PYTHONUNBUFFERED=1
 

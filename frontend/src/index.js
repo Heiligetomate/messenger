@@ -15,7 +15,10 @@ let currentUser = "";
   }
 
 window.addEventListener("DOMContentLoaded", () => {
-  let url = window.env.SERVICE_URL || "ws://localhost:6789/";
+  let protocol = window.location.protocol === "https:" ? "wss" : "ws";
+   let url = window.location.hostname === "localhost"
+       ? `${protocol}://localhost:6789/`
+       : `${protocol}://${window.location.hostname}:6789/`;
   console.log("WebSocket URL:", url);
   const websocket = new WebSocket(url);
 
