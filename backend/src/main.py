@@ -39,9 +39,9 @@ async def counter(websocket):
         async for message in websocket:
             event = json.loads(message)
             if event["action"] == "username":
-                print(f"new login: {event["username"]}")
+                print(f"new login: {event['username']}")
             elif event["action"] == "message":
-                print(f"{event["sender"]}: {event["message"]}")
+                print(f"{event['sender']}: {event['message']}")
                 broadcast(USERS, messages_event(event))
             else:
                 logging.error("unsupported event: %s", event)
@@ -52,7 +52,7 @@ async def counter(websocket):
 
 
 async def main():
-    async with serve(counter, "localhost", 6789):
+    async with serve(counter, "0.0.0.0", 6789):
         print("serving at port", 6789)
         await asyncio.get_running_loop().create_future()  # run forever
 
