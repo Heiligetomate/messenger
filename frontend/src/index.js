@@ -14,6 +14,8 @@ let currentUser = "";
         elem.append(p)
   }
 
+
+
 window.addEventListener("DOMContentLoaded", () => {
   let protocol = window.location.protocol === "https:" ? "wss" : "ws";
    let url = window.location.hostname === "localhost"
@@ -21,6 +23,7 @@ window.addEventListener("DOMContentLoaded", () => {
        : `${protocol}://${window.location.hostname}:6789/`;
   console.log("WebSocket URL:", url);
   const websocket = new WebSocket(url);
+
 
 
 document.querySelector("#confirm-send").addEventListener("click", () => {
@@ -40,6 +43,9 @@ document.querySelector("#user-confirm").addEventListener("click", () => {
   websocket.send(JSON.stringify({ action: "username", username: currentUser }));
 });
 
+document.querySelector("#get-old-messages").addEventListener("click", () => {
+  websocket.send(JSON.stringify({action: "init"}));
+})
 
   websocket.onmessage = onMessageReceived;
 
@@ -48,14 +54,21 @@ document.querySelector("#user-confirm").addEventListener("click", () => {
     switch (event.type) {
       case "users":
         //const users = `${event.count} user${event.count == 1 ? "" : "s"}`;
-        const users = `${event.count} user${event.count == 1 ? "" : "s"}`;
+        const users = `${event.count} user${event.count === 1 ? "" : "s"}`;
         document.querySelector(".users").textContent = users;
         break;
       case "message":
-        console.log(event.sender);
-        console.log(currentUser);
+        //console.log(event.sender);
         let isSelf = event.sender === currentUser;
+
         addContent(`${event.sender}(${event.timestamp}) : ${event.message}`, "messages", isSelf);
+        break;
+      case "init":
+        const jsonArray = JSON.parse(event.messages);
+        jsonArray.forEach((item, _) => {
+          addContent(`${item.user}(${item.timestamp}) : ${item.content}`, "messages", false);
+
+        });
         break;
       default:
         console.error("unsupported event", event);

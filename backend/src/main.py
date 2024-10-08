@@ -4,8 +4,10 @@ import asyncio
 import json
 import logging
 import time
+import jsonpickle
 
 from websockets.asyncio.server import broadcast, serve
+from message import Message
 
 logging.basicConfig()
 
@@ -13,18 +15,22 @@ USERS = set()
 
 VALUE = 0
 
+messages = []
+
 
 def users_event():
     return json.dumps({"type": "users", "count": len(USERS)})
 
 
-def value_event():
-    return json.dumps({"type": "value", "value": VALUE})
-
-
 def messages_event(event):
-    return json.dumps({"type": "message", "message": event["message"], "sender": event["sender"], "timestamp":
-    time.strftime("%H:%M")})
+    return json.dumps({"type": "message", "message": event["message"], "sender": event["sender"],
+                       "timestamp": time.strftime("%H:%M")})
+
+
+def old_messages_event():
+    json_string = jsonpickle.encode(messages)
+    print(json_string)
+    return json.dumps({"type": "init", "messages": json_string})
 
 
 async def counter(websocket):
@@ -41,8 +47,12 @@ async def counter(websocket):
             if event["action"] == "username":
                 print(f"new login: {event['username']}")
             elif event["action"] == "message":
-                print(f"{event['sender']}: {event['message']}")
+                #print(f"{event['sender']}: {event['message']}")
+                message = Message(event["sender"], event["message"], time.strftime("%H:%M"))
+                messages.append(message)
                 broadcast(USERS, messages_event(event))
+            elif event["action"] == "init":
+                broadcast([websocket], old_messages_event())
             else:
                 logging.error("unsupported event: %s", event)
     finally:

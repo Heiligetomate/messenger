@@ -10,7 +10,7 @@ body {
     justify-content: center;
 }
 
-.button, .value {
+.button-cst, .value {
     line-height: 1;
     padding: 2rem;
     margin: 2rem;
@@ -19,7 +19,7 @@ body {
     min-width: 1em;
 }
 
-.button {
+.button-cst {
     cursor: pointer;
     user-select: none;
 }
@@ -54,7 +54,7 @@ body {
 }
 
 .name-box {
-    margin: 1em;
+    /*margin: 1em;*/
     font-size: 2em;
     color: white;
 }
@@ -68,9 +68,7 @@ body {
     color: white;
 }
 
-.fieldset{
-    margin: 4em;
-}
+
 
 .p-left {
     text-align: left;

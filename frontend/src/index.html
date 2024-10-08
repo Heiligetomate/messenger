@@ -3,34 +3,38 @@
     <head>
         <title>WebSocket demo</title>
 
+        <link href="site.css" rel="stylesheet">
         <link href="index.css" rel="stylesheet">
     </head>
-    <body>
-
+    <body style="width: 100vw; padding: 24px;">
+    <div style="max-width: 800px; width: 100%;">
         <div id="name-box" class="name-box">name: </div>
         <label for="username">Username:</label>
-        <input type="text" id="username" class="username">
-        <button class="button" id="user-confirm">confirm</button>
-
-
+        <input type="text" id="username" class="username" style="width: 100%;">
+        <div>
+            <button style="min-width: 200px;" class="button-cst" id="user-confirm">confirm</button>
+            <button style="min-width: 200px;" class="button-cst" id="get-old-messages">old messages</button>
+        </div>
         <div class="state">
             <span class="users">?</span> online
         </div>
+        <fieldset class="fieldset">
+            <legend class="legend-messages">messages</legend>
+            <div id=messages class="messages">
+                <p></p>
+            </div>
+        </fieldset>
+
         <script src="index.js"></script>
-
-    </body>
-
-    <fieldset class="fieldset">
-	    <legend class="legend-messages">messages</legend>
-	    <div id=messages class="messages">
-            <p></p>
-        </div>
+    </div>
 
 
-    </fieldset>
-    <label>
+
+    <label style="min-width: 300px; display: flex; flex-direction: row;
+        justify-content: center; align-items: center; gap: 12px;">
         <input id="send-message" type="text">
-        <button id="confirm-send">send message</button>
+        <button id="confirm-send">send</button>
     </label>
 
+    </body>
 </html>
