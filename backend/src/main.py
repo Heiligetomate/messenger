@@ -23,7 +23,7 @@ def users_event():
 
 
 def messages_event(event):
-    return json.dumps({"type": "message", "message": event["message"], "sender": event["sender"],
+    return json.dumps({"type": "message", "content": event["content"], "user": event["user"],
                        "timestamp": time.strftime("%H:%M")})
 
 
@@ -44,10 +44,10 @@ async def counter(websocket):
         # Manage state changes
         async for message in websocket:
             event = json.loads(message)
-            if event["action"] == "username":
-                print(f"new login: {event['username']}")
+            if event["action"] == "user":
+                print(f"new login: {event['user']}")
             elif event["action"] == "message":
-                message = Message(event["sender"], event["message"], time.strftime("%H:%M"))
+                message = Message(event["content"], event["user"], time.strftime("%H:%M"))
                 messages.append(message)
                 broadcast(USERS, messages_event(event))
             elif event["action"] == "init":
