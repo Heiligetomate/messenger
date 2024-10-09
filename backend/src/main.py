@@ -36,12 +36,8 @@ def old_messages_event():
 async def counter(websocket):
     global USERS, VALUE
     try:
-        # Register user
         USERS.add(websocket)
         broadcast(USERS, users_event())
-        # Send current state to user
-        # await websocket.send(value_event()) FÜR WAS?
-        # Manage state changes
         async for message in websocket:
             event = json.loads(message)
             if event["action"] == "user":

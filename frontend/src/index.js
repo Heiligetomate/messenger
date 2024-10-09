@@ -45,6 +45,9 @@ document.querySelector("#user-confirm").addEventListener("click", () => {
 document.querySelector("#get-old-messages").addEventListener("click", () => {
   document.getElementById("messages").innerHTML = "";
   websocket.send(JSON.stringify({action: "init"}));
+  let button = document.getElementById("get-old-messages");
+  button.setAttribute("disabled", "true");
+
 })
 
   websocket.onmessage = onMessageReceived;
@@ -53,12 +56,10 @@ document.querySelector("#get-old-messages").addEventListener("click", () => {
     const event = JSON.parse(data);
     switch (event.type) {
       case "users":
-        //const users = `${event.count} user${event.count == 1 ? "" : "s"}`;
         const users = `${event.count} user${event.count === 1 ? "" : "s"}`;
         document.querySelector(".users").textContent = users;
         break;
       case "message":
-        //console.log(event.sender);
         let isSelf = event.user === currentUser;
 
         addContent(`${event.user}(${event.timestamp}) : ${event.content}`, "messages", isSelf);
