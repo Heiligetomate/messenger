@@ -1,7 +1,6 @@
 body {
     font-family: "Courier New", sans-serif;
     text-align: center;
-    background: black;
 }
 
 .buttons {
@@ -24,14 +23,6 @@ body {
     user-select: none;
 }
 
-.minus {
-    color: white;
-}
-
-.plus {
-    color: white;
-}
-
 .value {
     min-width: 2em;
     color: white;
@@ -39,17 +30,6 @@ body {
 
 .state {
     font-size: 2em;
-    color: white;
-}
-
-.username {
-    font-size: 1em;
-    color: white;
-    background: black;
-}
-
-.user-confirm {
-    font-size: 1em;
     color: white;
 }
 
@@ -64,16 +44,18 @@ body {
     font-size: 2em;
 }
 
-.messages{
-    color: white;
-}
-
-
-
 .p-left {
     text-align: left;
 }
 
 .p-right {
     text-align: right;
+}
+
+.global-bg{
+    background: #121212;
+}
+
+.global-font{
+    color: white;
 }

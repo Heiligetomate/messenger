@@ -6,22 +6,21 @@
         <link href="site.css" rel="stylesheet">
         <link href="index.css" rel="stylesheet">
     </head>
-    <body style="width: 100vw; padding: 24px;">
+    <body style="width: 100vw; padding: 24px; " class="global-bg">
     <div style="max-width: 800px; width: 100%;">
         <div id="name-box" class="name-box">name: </div>
         <label for="username">Username:</label>
-        <input type="text" id="username" class="username" style="width: 100%;">
+        <input type="text" id="username" class="global-font global-bg" style="width: 100%;">
         <div>
-            <button style="min-width: 200px;" class="button-cst" id="user-confirm">confirm</button>
-            <button style="min-width: 200px;" class="button-cst" id="get-old-messages">old messages</button>
+            <button style="min-width: 200px;" class="button-cst global-bg" id="user-confirm">confirm</button>
+            <button style="min-width: 200px;" class="button-cst global-bg" id="get-old-messages">old messages</button>
         </div>
         <div class="state">
             <span class="users">?</span> online
         </div>
         <fieldset class="fieldset">
             <legend class="legend-messages">messages</legend>
-            <div id=messages class="messages">
-                <p></p>
+            <div id=messages class="global-font">
             </div>
         </fieldset>
 
@@ -33,7 +32,7 @@
     <label style="min-width: 300px; display: flex; flex-direction: row;
         justify-content: center; align-items: center; gap: 12px;">
         <input id="send-message" type="text">
-        <button id="confirm-send">send</button>
+        <button id="confirm-send" class="global-bg">send</button>
     </label>
 
     </body>
