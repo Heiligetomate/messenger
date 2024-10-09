@@ -47,7 +47,6 @@ async def counter(websocket):
             if event["action"] == "username":
                 print(f"new login: {event['username']}")
             elif event["action"] == "message":
-                #print(f"{event['sender']}: {event['message']}")
                 message = Message(event["sender"], event["message"], time.strftime("%H:%M"))
                 messages.append(message)
                 broadcast(USERS, messages_event(event))

@@ -14,6 +14,12 @@ let currentUser = "";
         elem.append(p)
   }
 
+  function removeElementsByClassName(className){
+    let elements = document.querySelectorAll(className);
+    for (let i = 0; i < elements.length; i++) {
+      i.remove();
+    }
+  }
 
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -44,6 +50,7 @@ document.querySelector("#user-confirm").addEventListener("click", () => {
 });
 
 document.querySelector("#get-old-messages").addEventListener("click", () => {
+  document.getElementById("messages").innerHTML = "";
   websocket.send(JSON.stringify({action: "init"}));
 })
 
@@ -66,7 +73,8 @@ document.querySelector("#get-old-messages").addEventListener("click", () => {
       case "init":
         const jsonArray = JSON.parse(event.messages);
         jsonArray.forEach((item, _) => {
-          addContent(`${item.user}(${item.timestamp}) : ${item.content}`, "messages", false);
+          let isOwn = item.user === currentUser;
+          addContent(`${item.user}(${item.timestamp}) : ${item.content}`, "messages", isOwn);
 
         });
         break;
