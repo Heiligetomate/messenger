@@ -23,13 +23,16 @@ let currentUser = "";
 
 
 window.addEventListener("DOMContentLoaded", () => {
-  let protocol = window.location.protocol === "https:" ? "wss" : "ws";
    let url = window.location.hostname === "localhost"
-       ? `${protocol}://localhost:6789/`
-       : `${protocol}://api.${window.location.hostname}/`;
-  const websocket = new WebSocket(url);
-
-
+       ? `http://localhost:6789`
+       : `wss://api.${window.location.hostname}`;
+  console.log("WebSocket URL:", url);
+  let websocket;
+  try{
+    websocket = new WebSocket(url);
+  } catch (e){
+    console.log(e);
+  }
 
 document.querySelector("#confirm-send").addEventListener("click", () => {
   let message = document.getElementById("send-message").value
