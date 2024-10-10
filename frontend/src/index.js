@@ -14,16 +14,17 @@ let currentUser = "";
         elem.append(p)
   }
 
-
 window.addEventListener("DOMContentLoaded", () => {
-  let protocol = window.location.protocol === "https:" ? "wss" : "ws";
    let url = window.location.hostname === "localhost"
-       ? `${protocol}://localhost:6789/`
-       : `${protocol}://api.${window.location.hostname}/`;
+       ? `http://localhost:6789`
+       : `wss://api.${window.location.hostname}`;
   console.log("WebSocket URL:", url);
-  const websocket = new WebSocket(url);
-
-
+  let websocket;
+  try{
+    websocket = new WebSocket(url);
+  } catch (e){
+    console.log(e);
+  }
 
 document.querySelector("#confirm-send").addEventListener("click", () => {
   let message = document.getElementById("send-message").value
@@ -32,22 +33,20 @@ document.querySelector("#confirm-send").addEventListener("click", () => {
     websocket.send(JSON.stringify(msg));
     document.getElementById("send-message").value = "";
   }
-
-});
+})
 
 document.querySelector("#user-confirm").addEventListener("click", () => {
   currentUser = document.getElementById("username").value;
   document.getElementById("username").value = "";
   document.querySelector("#name-box").textContent = "name: " + currentUser;
   websocket.send(JSON.stringify({ action: "user", user: currentUser }));
-});
+})
 
 document.querySelector("#get-old-messages").addEventListener("click", () => {
   document.getElementById("messages").innerHTML = "";
   websocket.send(JSON.stringify({action: "init"}));
   let button = document.getElementById("get-old-messages");
   button.setAttribute("disabled", "true");
-
 })
 
   websocket.onmessage = onMessageReceived;
@@ -61,7 +60,6 @@ document.querySelector("#get-old-messages").addEventListener("click", () => {
         break;
       case "message":
         let isSelf = event.user === currentUser;
-
         addContent(`${event.user}(${event.timestamp}) : ${event.content}`, "messages", isSelf);
         break;
       case "init":
