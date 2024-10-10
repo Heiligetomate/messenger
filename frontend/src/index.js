@@ -19,7 +19,7 @@ window.addEventListener("DOMContentLoaded", () => {
   let protocol = window.location.protocol === "https:" ? "wss" : "ws";
    let url = window.location.hostname === "localhost"
        ? `${protocol}://localhost:6789/`
-       : `${protocol}://${window.location.hostname}:6789/`;
+       : `${protocol}://api.${window.location.hostname}/`;
   console.log("WebSocket URL:", url);
   const websocket = new WebSocket(url);
 
