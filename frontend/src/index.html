@@ -8,12 +8,23 @@
     </head>
     <body style="width: 100vw; padding: 24px; " class="global-bg">
     <div style="max-width: 800px; width: 100%;">
-        <div id="name-box" class="name-box">name: </div>
-        <label for="username">Username:</label>
-        <input type="text" id="username" class="global-font global-bg" style="width: 100%;">
+        <p id="display-username" style="color: white; font-size: 2em">logged in as: </p>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <p style="color: #ababab">username: &#8205; </p>
+            <input type="text" id="username">
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <p style="color: #ababab">password: &#8205;</p>
+            <input type="password" id="password">
+        </div>
         <div>
-            <button style="min-width: 200px;" class="button-cst global-bg" id="user-confirm">confirm</button>
-            <button style="min-width: 200px;" class="button-cst global-bg" id="get-old-messages">old messages</button>
+            <select id="login-or-register">
+                <option>login</option>
+                <option>register</option>
+            </select>
+            <button id="confirm-login-or-register">
+                confirm
+            </button>
         </div>
         <div class="state">
             <span class="users">?</span> online

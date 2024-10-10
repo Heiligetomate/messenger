@@ -1,5 +1,6 @@
 let currentUser = "";
 
+
   function createParagraph(content){
     	let p = document.createElement("p");
     	p.append(content);
@@ -14,13 +15,18 @@ let currentUser = "";
         elem.append(p)
   }
 
+  function getValueAndDeleteContent(elementId){
+    let elementValue = document.getElementById(elementId).value;
+    document.getElementById(elementId).value = "";
+    return elementValue;
+  }
+
 
 window.addEventListener("DOMContentLoaded", () => {
   let protocol = window.location.protocol === "https:" ? "wss" : "ws";
    let url = window.location.hostname === "localhost"
        ? `${protocol}://localhost:6789/`
        : `${protocol}://api.${window.location.hostname}/`;
-  console.log("WebSocket URL:", url);
   const websocket = new WebSocket(url);
 
 
@@ -35,20 +41,25 @@ document.querySelector("#confirm-send").addEventListener("click", () => {
 
 });
 
-document.querySelector("#user-confirm").addEventListener("click", () => {
-  currentUser = document.getElementById("username").value;
-  document.getElementById("username").value = "";
-  document.querySelector("#name-box").textContent = "name: " + currentUser;
-  websocket.send(JSON.stringify({ action: "user", user: currentUser }));
+document.querySelector("#confirm-login-or-register").addEventListener("click", () => {
+  let usersPassword = getValueAndDeleteContent("password");
+  let userLogin = getValueAndDeleteContent("username");
+  let loginOrRegister = document.getElementById("login-or-register").value
+  if (loginOrRegister === "login"){
+    websocket.send(JSON.stringify({ action: "login", user: userLogin, password: usersPassword }));
+  }
+  else {
+    websocket.send(JSON.stringify({ action: "register", user: userLogin, password: usersPassword }));
+  }
 });
 
-document.querySelector("#get-old-messages").addEventListener("click", () => {
-  document.getElementById("messages").innerHTML = "";
-  websocket.send(JSON.stringify({action: "init"}));
-  let button = document.getElementById("get-old-messages");
-  button.setAttribute("disabled", "true");
-
-})
+//document.querySelector("#get-old-messages").addEventListener("click", () => {
+//  document.getElementById("messages").innerHTML = "";
+//  websocket.send(JSON.stringify({action: "init"}));
+//  let button = document.getElementById("get-old-messages");
+//  button.setAttribute("disabled", "true");
+//
+//})
 
   websocket.onmessage = onMessageReceived;
 
@@ -68,11 +79,20 @@ document.querySelector("#get-old-messages").addEventListener("click", () => {
         const jsonArray = JSON.parse(event.messages);
         jsonArray.forEach((item, _) => {
           let isOwn = item.user === currentUser;
-          console.log(isOwn);
           addContent(`${item.user}(${item.timestamp}) : ${item.content}`, "messages", isOwn);
 
         });
         break;
+      case "login":
+        if(event.success === true){
+          currentUser = event.user
+          document.getElementById("display-username").innerHTML = "logged in as: " + currentUser;
+          break;
+        }
+        window.alert("Wrong login data. Please try again")
+        break;
+
+
       default:
         console.error("unsupported event", event);
     }

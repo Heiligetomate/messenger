@@ -3,3 +3,4 @@ class Message():
         self.content = content
         self.user = user
         self.timestamp = timestamp
+
