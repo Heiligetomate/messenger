@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>WebSocket demo</title>
+
+        <link href="site.css" rel="stylesheet">
+        <link href="index.css" rel="stylesheet">
+    </head>
+    <body style="width: 100vw; padding: 24px; " class="global-bg">
+    <div style="max-width: 800px; width: 100%;">
+        <p id="display-username" style="color: white; font-size: 2em">logged in as: </p>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <p style="color: #ababab">username: &#8205; </p>
+            <input type="text" id="username">
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <p style="color: #ababab">password: &#8205;</p>
+            <input type="password" id="password">
+        </div>
+        <div>
+            <select id="login-or-register">
+                <option>login</option>
+                <option>register</option>
+            </select>
+            <button id="confirm-login-or-register">
+                confirm
+            </button>
+        </div>
+        <div class="state">
+            <span class="users">?</span> online
+        </div>
+        <fieldset class="fieldset">
+            <legend class="legend-messages">messages</legend>
+            <div id=messages class="global-font" style="overflow-y: scroll; max-height: 700px; scrollbar-width: thin; padding: 0.5em">
+            </div>
+        </fieldset>
+
+        <script src="index.js"></script>
+    </div>
+
+
+
+    <label style="min-width: 300px; display: flex; flex-direction: row;
+        justify-content: center; align-items: center; gap: 12px;">
+        <input id="send-message" type="text">
+        <button id="confirm-send" class="global-bg">send</button>
+    </label>
+
+    </body>
+</html>
