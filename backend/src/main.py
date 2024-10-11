@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import asyncio
 import json
 import logging
@@ -10,16 +8,6 @@ from websockets.asyncio.server import broadcast, serve
 from message import Message
 from user_account import User
 from registration import Registration
-
-logging.basicConfig()
-
-USERS = set()
-
-VALUE = 0
-
-messages: list[Message] = []
-
-accounts: list[User] = []
 
 
 def users_event() -> str:
@@ -50,6 +38,17 @@ def old_messages_event() -> str:
     return json.dumps({"type": "init", "messages": json_string})
 
 
+logging.basicConfig()
+
+USERS = set()
+
+VALUE = 0
+
+messages: list[Message] = []
+
+accounts: list[User] = []
+
+
 async def counter(websocket):
     global USERS, VALUE
     try:
@@ -64,15 +63,15 @@ async def counter(websocket):
                         registration_success = False
                         break
                 user = User(event["user"], event["password"])
-                if registration_success:
+                if len(event["password"]) < 4:
+                    registration_success = False
+                    success_message = "Password must be at least 4 characters long"
+                elif registration_success:
                     accounts.append(user)
                     print(f"new register: {event['user']} password: {event['password']}")
                     success_message = f"you created the account {user.username} successfully"
                 else:
                     success_message = "user already exists"
-                if len(event["password"]) < 4:
-                    registration_success = False
-                    success_message = "Password must be at least 4 characters long"
                 registration = Registration(user.username, success_message)
                 broadcast([websocket], registration_event(registration))
 
