@@ -44,6 +44,19 @@ document.querySelector("#confirm-send").addEventListener("click", () => {
 
 });
 
+document.querySelector('#send-message').addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') {
+    let message = document.getElementById("send-message").value;
+    let msg = {action: "message", content: message, user: currentUser};
+    if (currentUser.trim() !== "" && message !== "") {
+      websocket.send(JSON.stringify(msg));
+      document.getElementById("send-message").value = "";
+    }
+  }
+});
+
+
+
 document.querySelector("#confirm-login-or-register").addEventListener("click", () => {
   let usersPassword = getValueAndDeleteContent("password");
   let userLogin = getValueAndDeleteContent("username");
@@ -79,6 +92,7 @@ document.querySelector("#confirm-login-or-register").addEventListener("click", (
         addContent(`${event.user}(${event.timestamp}) : ${event.content}`, "messages", isSelf);
         break;
       case "init":
+        document.getElementById("messages").innerHTML = "";
         const jsonArray = JSON.parse(event.messages);
         jsonArray.forEach((item, _) => {
           let isOwn = item.user === currentUser;
