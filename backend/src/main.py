@@ -70,6 +70,9 @@ async def counter(websocket):
                     success_message = f"you created the account {user.username} successfully"
                 else:
                     success_message = "user already exists"
+                if len(event["password"]) < 4:
+                    registration_success = False
+                    success_message = "Password must be at least 4 characters long"
                 registration = Registration(user.username, success_message)
                 broadcast([websocket], registration_event(registration))
 
