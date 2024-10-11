@@ -109,6 +109,10 @@ document.querySelector("#confirm-login-or-register").addEventListener("click", (
         window.alert("Wrong login data. Please try again")
         break;
 
+      case "registration":
+        const registration = JSON.parse(event.registration);
+        window.alert(registration.success_message);
+        break;
 
       default:
         console.error("unsupported event", event);

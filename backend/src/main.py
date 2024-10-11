@@ -9,6 +9,7 @@ import jsonpickle
 from websockets.asyncio.server import broadcast, serve
 from message import Message
 from user_account import User
+from registration import Registration
 
 logging.basicConfig()
 
@@ -25,12 +26,17 @@ def users_event() -> str:
     return json.dumps({"type": "users", "count": len(USERS)})
 
 
-def login_event(username) -> str:
+def login_event(username: str) -> str:
     return json.dumps({"type": "login", "user": username, "success": True})
 
 
 def login_failed_event() -> str:
     return json.dumps({"type": "login", "success": False})
+
+
+def registration_event(registration: Registration) -> str:
+    json_string = jsonpickle.encode(registration)
+    return json.dumps({"type": "registration", "registration": json_string})
 
 
 def messages_event(event) -> str:
@@ -51,9 +57,21 @@ async def counter(websocket):
         async for message in websocket:
             event = json.loads(message)
             if event["action"] == "register":
+                user = event["user"]
+                registration_success = True
+                for account in accounts:
+                    if account.username == user:
+                        registration_success = False
+                        break
                 user = User(event["user"], event["password"])
-                accounts.append(user)
-                print(f"new register: {event['user']} password: {event['password']}")
+                if registration_success:
+                    accounts.append(user)
+                    print(f"new register: {event['user']} password: {event['password']}")
+                    success_message = f"you created the account {user.username} successfully"
+                else:
+                    success_message = "user already exists"
+                registration = Registration(user.username, success_message)
+                broadcast([websocket], registration_event(registration))
 
             elif event["action"] == "login":
                 username = event["user"]
