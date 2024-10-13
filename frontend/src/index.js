@@ -83,7 +83,7 @@ document.querySelector("#confirm-login-or-register").addEventListener("click", (
     const event = JSON.parse(data);
     switch (event.type) {
       case "users":
-        const users = `${event.count} user${event.count === 1 ? "" : "s"}`;
+        const users = `${event.users} user${event.users === 1 ? "" : "s"}`;
         document.querySelector(".users").textContent = users;
         break;
       case "message":

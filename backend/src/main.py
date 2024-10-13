@@ -11,7 +11,7 @@ from registration import Registration
 
 
 def users_event() -> str:
-    return json.dumps({"type": "users", "count": len(USERS)})
+    return json.dumps({"type": "users", "users": len(USERS)})
 
 
 def login_event(username: str) -> str:
@@ -59,7 +59,7 @@ async def counter(websocket):
                 user = event["user"]
                 registration_success = True
                 for account in accounts:
-                    if account.username == user:
+                    if account.username.lower() == user.lower():
                         registration_success = False
                         break
                 user = User(event["user"], event["password"])
@@ -83,6 +83,7 @@ async def counter(websocket):
                     if account.username == username and account.password == password:
                         login_success = True
                         break
+                broadcast(USERS, users_event())
                 if login_success:
                     broadcast([websocket], login_event(username))
                     broadcast([websocket], old_messages_event())
@@ -100,7 +101,7 @@ async def counter(websocket):
     finally:
         # Unregister user
         USERS.remove(websocket)
-        broadcast(USERS, users_event())
+        #broadcast(USERS, users_event())
 
 
 async def main():
