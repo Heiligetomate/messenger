@@ -1,25 +1,67 @@
-let currentUser = "";
 
 
-  function createParagraph(content){
-    	let p = document.createElement("p");
-    	p.append(content);
-        return p;
-    }
+function createParagraph(content){
+  let p = document.createElement("p");
+  p.append(content);
+    return p;
+}
 
-  function addContent(content, elementId, isOwnMessage){
-        let elem = document.getElementById(elementId);
-        let p = createParagraph(content)
-        let cssClass = isOwnMessage ? "p-left" : "p-right";
-        p.classList.add(cssClass);
-        elem.append(p)
+function addContent(content, elementId, isOwnMessage){
+   let elem = document.getElementById(elementId);
+   let p = createParagraph(content)
+   let cssClass = isOwnMessage ? "p-left" : "p-right";
+   p.classList.add(cssClass);
+   elem.append(p)
+}
+
+function getValueAndDeleteContent(elementId){
+  let elementValue = document.getElementById(elementId).value;
+  document.getElementById(elementId).value = "";
+  return elementValue;
+}
+
+function setCookie(cookieName, cookieValue, expireDays){
+  const expireTime = new Date();
+  expireTime.setTime(expireTime.getTime() + (expireDays*24*60*60*1000));
+  let expireDate = "expires="+ expireTime.toUTCString();
+  document.cookie = `${cookieName}=${cookieValue};${expireDate};path=/`
+}
+
+function getCookie(name) {
+  let matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+function changeUserDisplay(user){
+   document.getElementById("display-username").innerHTML = "logged in as: " + user;
+}
+
+function logout(){
+  changeUserDisplay("");
+  return "";
+}
+
+function deleteCookie(name) {
+  setCookie(name, "", {
+    'max-age': -1
+  })
+}
+
+function getUserCookies(){
+  let user;
+  let password;
+  try{
+   user = getCookie("user");
+   password = getCookie("password");
+   changeUserDisplay(user);
+  } catch (e){
+    user = "";
   }
-
-  function getValueAndDeleteContent(elementId){
-    let elementValue = document.getElementById(elementId).value;
-    document.getElementById(elementId).value = "";
-    return elementValue;
-  }
+  console.log(user);
+  return [user, password];
+}
 
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -33,6 +75,11 @@ window.addEventListener("DOMContentLoaded", () => {
   } catch (e){
     console.log(e);
   }
+
+  let cookieUser = getUserCookies();
+  document.getElementById("username").value = cookieUser[0]
+  document.getElementById("password").value = cookieUser[1]
+
 
 document.querySelector("#confirm-send").addEventListener("click", () => {
   let message = document.getElementById("send-message").value
@@ -60,62 +107,74 @@ document.querySelector('#send-message').addEventListener('keypress', function (e
 document.querySelector("#confirm-login-or-register").addEventListener("click", () => {
   let usersPassword = getValueAndDeleteContent("password");
   let userLogin = getValueAndDeleteContent("username");
-  let loginOrRegister = document.getElementById("login-or-register").value
-  if (loginOrRegister === "login"){
-    websocket.send(JSON.stringify({ action: "login", user: userLogin, password: usersPassword }));
-  }
-  else {
-    websocket.send(JSON.stringify({ action: "register", user: userLogin, password: usersPassword }));
+  let dropBarAction = document.getElementById("login-or-register").value
+  switch (dropBarAction) {
+
+    case "login":
+      websocket.send(JSON.stringify({ action: "login", user: userLogin, password: usersPassword }));
+      setCookie("user", userLogin, 1);
+      setCookie("password", usersPassword, 1);
+      break;
+
+    case "register":
+      websocket.send(JSON.stringify({ action: "register", user: userLogin, password: usersPassword }));
+      break;
+
+    case "logout":
+      currentUser = logout();
+      document.getElementById("messages").innerHTML = "";
+      deleteCookie("user")
+      break;
+
+    default:
+      console.error("unsupported option", dropBarAction);
   }
 });
 
-//document.querySelector("#get-old-messages").addEventListener("click", () => {
-//  document.getElementById("messages").innerHTML = "";
-//  websocket.send(JSON.stringify({action: "init"}));
-//  let button = document.getElementById("get-old-messages");
-//  button.setAttribute("disabled", "true");
-//
-//})
 
-  websocket.onmessage = onMessageReceived;
 
-  function onMessageReceived({data}){
-    const event = JSON.parse(data);
-    switch (event.type) {
-      case "users":
-        const users = `${event.users} user${event.users === 1 ? "" : "s"}`;
-        document.querySelector(".users").textContent = users;
+websocket.onmessage = onMessageReceived;
+
+function onMessageReceived({data}){
+  const event = JSON.parse(data);
+  switch (event.type) {
+
+    case "users":
+      const users = `${event.users} user${event.users === 1 ? "" : "s"}`;
+      document.querySelector(".users").textContent = users;
+      break;
+
+    case "message":
+      let isSelf = event.user === currentUser;
+      addContent(`${event.user}(${event.timestamp}) : ${event.content}`, "messages", isSelf);
+      break;
+
+    case "init":
+      document.getElementById("messages").innerHTML = "";
+      const jsonArray = JSON.parse(event.messages);
+      jsonArray.forEach((item, _) => {
+        let isOwn = item.user === currentUser;
+        addContent(`${item.user}(${item.timestamp}) : ${item.content}`, "messages", isOwn);
+      });
+      break;
+
+    case "login":
+      if(event.success === true){
+        currentUser = event.user
+        changeUserDisplay(currentUser)
+
         break;
-      case "message":
-        let isSelf = event.user === currentUser;
+      }
+      window.alert("Wrong login data. Please try again")
+      break;
 
-        addContent(`${event.user}(${event.timestamp}) : ${event.content}`, "messages", isSelf);
-        break;
-      case "init":
-        document.getElementById("messages").innerHTML = "";
-        const jsonArray = JSON.parse(event.messages);
-        jsonArray.forEach((item, _) => {
-          let isOwn = item.user === currentUser;
-          addContent(`${item.user}(${item.timestamp}) : ${item.content}`, "messages", isOwn);
+    case "registration":
+      const registration = JSON.parse(event.registration);
+      window.alert(registration.success_message);
+      break;
 
-        });
-        break;
-      case "login":
-        if(event.success === true){
-          currentUser = event.user
-          document.getElementById("display-username").innerHTML = "logged in as: " + currentUser;
-          break;
-        }
-        window.alert("Wrong login data. Please try again")
-        break;
-
-      case "registration":
-        const registration = JSON.parse(event.registration);
-        window.alert(registration.success_message);
-        break;
-
-      default:
-        console.error("unsupported event", event);
-    }
+    default:
+      console.error("unsupported event", event);
   }
+}
 });

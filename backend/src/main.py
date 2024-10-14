@@ -34,7 +34,6 @@ def messages_event(event) -> str:
 
 def old_messages_event() -> str:
     json_string = jsonpickle.encode(messages)
-    print(json_string)
     return json.dumps({"type": "init", "messages": json_string})
 
 
@@ -94,14 +93,14 @@ async def counter(websocket):
                 message = Message(event["content"], event["user"], time.strftime("%H:%M"))
                 messages.append(message)
                 broadcast(USERS, messages_event(event))
+
             elif event["action"] == "init":
                 broadcast([websocket], old_messages_event())
+
             else:
                 logging.error("unsupported event: %s", event)
     finally:
-        # Unregister user
         USERS.remove(websocket)
-        #broadcast(USERS, users_event())
 
 
 async def main():
