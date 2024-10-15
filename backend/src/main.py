@@ -22,8 +22,8 @@ def login_failed_event() -> str:
     return json.dumps({"type": "login", "success": False})
 
 
-def registration_event(registration: Registration) -> str:
-    json_string = jsonpickle.encode(registration)
+def registration_event(user_registration: Registration) -> str:
+    json_string = jsonpickle.encode(user_registration)
     return json.dumps({"type": "registration", "registration": json_string})
 
 
@@ -37,6 +37,53 @@ def old_messages_event() -> str:
     return json.dumps({"type": "init", "messages": json_string})
 
 
+def registration(event, websocket) -> None:
+    user = event["user"]
+    registration_success = True
+    for account in accounts:
+        if account.username.lower() == user.lower():
+            registration_success = False
+            break
+    user = User(event["user"], event["password"])
+    if len(event["password"]) < 4:
+        registration_success = False
+        success_message = "Password must be at least 4 characters long"
+    elif registration_success:
+        accounts.append(user)
+        print(f"new register: {event['user']} password: {event['password']}")
+        success_message = f"you created the account {user.username} successfully"
+    else:
+        success_message = "user already exists"
+    new_user = Registration(user.username, success_message)
+    broadcast([websocket], registration_event(new_user))
+
+
+def login(event, websocket) -> None:
+    user = event["user"]
+    password = event["password"]
+    login_success = False
+    for account in accounts:
+        if account.username.lower() == user.lower() and account.password == password:
+            login_success = True
+            break
+    #broadcast(USERS, users_event())
+    if login_success:
+        broadcast([websocket], login_event(user))
+        broadcast([websocket], old_messages_event())
+    else:
+        broadcast([websocket], login_failed_event())
+
+
+def message(event) -> None:
+    msg = Message(event["content"], event["user"], time.strftime("%H:%M"))
+    messages.append(msg)
+    broadcast(USERS, messages_event(event))
+
+
+def init(event, websocket) -> None:
+    broadcast([websocket], old_messages_event())
+
+
 logging.basicConfig()
 
 USERS = set()
@@ -48,54 +95,23 @@ messages: list[Message] = []
 accounts: list[User] = []
 
 
-async def counter(websocket):
+async def on_message_receive(websocket) -> None:
     global USERS, VALUE
     try:
         USERS.add(websocket)
-        async for message in websocket:
-            event = json.loads(message)
+        async for msg in websocket:
+            event = json.loads(msg)
             if event["action"] == "register":
-                user = event["user"]
-                registration_success = True
-                for account in accounts:
-                    if account.username.lower() == user.lower():
-                        registration_success = False
-                        break
-                user = User(event["user"], event["password"])
-                if len(event["password"]) < 4:
-                    registration_success = False
-                    success_message = "Password must be at least 4 characters long"
-                elif registration_success:
-                    accounts.append(user)
-                    print(f"new register: {event['user']} password: {event['password']}")
-                    success_message = f"you created the account {user.username} successfully"
-                else:
-                    success_message = "user already exists"
-                registration = Registration(user.username, success_message)
-                broadcast([websocket], registration_event(registration))
+                registration(event, websocket)
 
             elif event["action"] == "login":
-                username = event["user"]
-                password = event["password"]
-                login_success = False
-                for account in accounts:
-                    if account.username == username and account.password == password:
-                        login_success = True
-                        break
-                broadcast(USERS, users_event())
-                if login_success:
-                    broadcast([websocket], login_event(username))
-                    broadcast([websocket], old_messages_event())
-                else:
-                    broadcast([websocket], login_failed_event())
+                login(event, websocket)
 
             elif event["action"] == "message":
-                message = Message(event["content"], event["user"], time.strftime("%H:%M"))
-                messages.append(message)
-                broadcast(USERS, messages_event(event))
+                message(event)
 
             elif event["action"] == "init":
-                broadcast([websocket], old_messages_event())
+                init(event, websocket)
 
             else:
                 logging.error("unsupported event: %s", event)
@@ -104,7 +120,7 @@ async def counter(websocket):
 
 
 async def main():
-    async with serve(counter, "0.0.0.0", 6789):
+    async with serve(on_message_receive, "0.0.0.0", 6789):
         print("serving at port", 6789)
         await asyncio.get_running_loop().create_future()  # run forever
 

@@ -9,7 +9,7 @@ function createParagraph(content){
 function addContent(content, elementId, isOwnMessage){
    let elem = document.getElementById(elementId);
    let p = createParagraph(content)
-   let cssClass = isOwnMessage ? "p-left" : "p-right";
+   let cssClass = isOwnMessage ?  "p-right" : "p-left";
    p.classList.add(cssClass);
    elem.append(p)
 }
@@ -55,13 +55,27 @@ function getUserCookies(){
   try{
    user = getCookie("user");
    password = getCookie("password");
-   changeUserDisplay(user);
   } catch (e){
     user = "";
   }
   console.log(user);
   return [user, password];
 }
+
+function scrollToBottom(childContainer, parentContainer){
+  let child = document.getElementById(childContainer);
+  let height = child.clientHeight;
+  let parent = document.getElementById(parentContainer);
+  console.log(height);
+  //scrollBar.scrollTo(0, height);
+  parent.scrollTo({
+  top: height + 500,
+  behavior: "smooth",
+});
+}
+
+// Global ids
+
 
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -93,9 +107,9 @@ document.querySelector("#confirm-send").addEventListener("click", () => {
 
 document.querySelector('#send-message').addEventListener('keypress', function (e) {
   if (e.key === 'Enter') {
-    let message = document.getElementById("send-message").value;
-    let msg = {action: "message", content: message, user: currentUser};
-    if (currentUser.trim() !== "" && message !== "") {
+    let content = document.getElementById("send-message").value;
+    let msg = {action: "message", content: content, user: currentUser};
+    if (currentUser.trim() !== "" && content !== "") {
       websocket.send(JSON.stringify(msg));
       document.getElementById("send-message").value = "";
     }
@@ -132,7 +146,7 @@ document.querySelector("#confirm-login-or-register").addEventListener("click", (
 });
 
 
-
+let currentUser;
 websocket.onmessage = onMessageReceived;
 
 function onMessageReceived({data}){
@@ -147,6 +161,7 @@ function onMessageReceived({data}){
     case "message":
       let isSelf = event.user === currentUser;
       addContent(`${event.user}(${event.timestamp}) : ${event.content}`, "messages", isSelf);
+      scrollToBottom("messages", "message-container")
       break;
 
     case "init":
@@ -161,8 +176,7 @@ function onMessageReceived({data}){
     case "login":
       if(event.success === true){
         currentUser = event.user
-        changeUserDisplay(currentUser)
-
+        changeUserDisplay(event.user)
         break;
       }
       window.alert("Wrong login data. Please try again")
