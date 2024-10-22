@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>WebSocket demo</title>
+
+        <link href="messenger.css" rel="stylesheet">
+            <link href="../site.css" rel="stylesheet">
+
+    </head>
+    <body style="width: 100vw; padding: 24px; " class="global-bg">
+    <div style="max-width: 800px; width: 100%;">
+        <p id="display-username" style="color: white; font-size: 2em">logged in as: </p>
+
+        <div class="state">
+            <span class="users">?</span> online
+        </div>
+        <fieldset class="fieldset">
+            <legend class="legend-messages">messages</legend>
+            <div id=messages class="global-font" style="overflow-y: scroll; max-height: 700px; scrollbar-width: thin; padding: 0.5em">
+            </div>
+        </fieldset>
+
+        <script src="messenger.js" type="module"></script>
+    </div>
+
+
+
+    <label style="min-width: 300px; display: flex; flex-direction: row;
+        justify-content: center; align-items: center; gap: 12px;">
+        <input id="send-message" type="text">
+        <button id="confirm-send" class="global-bg">send</button>
+    </label>
+
+    </body>
+</html>

@@ -80,7 +80,7 @@ def message(event) -> None:
     broadcast(USERS, messages_event(event))
 
 
-def init(event, websocket) -> None:
+def init(websocket) -> None:
     broadcast([websocket], old_messages_event())
 
 

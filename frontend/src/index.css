@@ -1,62 +1,76 @@
-body {
-    font-family: "Courier New", sans-serif;
-    text-align: center;
-}
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
 
-.buttons {
-    font-size: 4em;
-    display: flex;
-    justify-content: center;
-}
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #121212;
+            color: #ffffff;
+        }
 
-.button-cst, .value {
-    line-height: 1;
-    padding: 2rem;
-    margin: 2rem;
-    border: medium solid;
-    min-height: 1em;
-    min-width: 1em;
-}
+        .container {
+            background-color: #1f1f1f;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+            width: 350px;
+            padding: 20px;
+        }
 
-.button-cst {
-    cursor: pointer;
-    user-select: none;
-}
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
 
-.value {
-    min-width: 2em;
-    color: white;
-}
+        form {
+            display: flex;
+            flex-direction: column;
+        }
 
-.state {
-    font-size: 2em;
-    color: white;
-}
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            background-color: #292929;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
 
-.name-box {
-    /*margin: 1em;*/
-    font-size: 2em;
-    color: white;
-}
+        input[type="submit"] {
+            background-color: #6200ea;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
 
-.legend-messages{
-    color: white;
-    font-size: 2em;
+        input[type="submit"]:hover {
+            background-color: #3700b3;
+        }
 
-}
+        .switch-link {
+            text-align: center;
+            margin-top: 15px;
+        }
 
-.p-left {
-    text-align: left;
-}
+        .switch-link a {
+            color: #bb86fc;
+            text-decoration: none;
+            font-size: 14px;
+        }
 
-.p-right {
-    text-align: right;
-}
-
-.global-bg{
-    background: #121212;
-}
-
-.global-font{
-    color: white;
-}
+        .switch-link a:hover {
+            text-decoration: underline;
+        }
