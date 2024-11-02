@@ -45,10 +45,11 @@ window.addEventListener("load", () => {
   } catch (e){
     console.log(e);
   }
-  websocket.onopen = () => websocket.send(JSON.stringify({ action: "init"}));
-
-  let currentUser = getFromStorage(1)
+  let currentUser = getFromStorage(true)
   changeUserDisplay(currentUser);
+
+  websocket.onopen = () => websocket.send(JSON.stringify({ action: "init", user: currentUser }));
+
 
 
 document.querySelector("#confirm-send").addEventListener("click", () => {
