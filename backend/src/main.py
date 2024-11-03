@@ -3,6 +3,8 @@ import json
 import logging
 import time
 import uuid
+from pprint import pprint
+
 from dbm import error
 from operator import attrgetter
 
@@ -71,7 +73,7 @@ def login(event, websocket) -> None:
         if account.username.lower() == user.lower() and account.password == password:
             login_success = True
             break
-    #broadcast(USERS, users_event())
+    # broadcast(USERS, users_event())
     if login_success:
         broadcast([websocket], login_event(user))
         broadcast([websocket], old_messages_event())
@@ -89,15 +91,11 @@ def message(event) -> None:
 def init(event, websocket) -> None:
     broadcast([websocket], old_messages_event())
     CLIENTS[websocket.id].username = event["user"]
+    print(f"id on init event: {websocket.id}")
 
 
 logging.basicConfig()
-
-#USERS = set()
-
 CLIENTS: dict[uuid.UUID, Client] = {}
-
-#USERS: set = set(map(lambda x: x.websocket, CLIENTS.values()))
 
 
 def users() -> set:
@@ -106,16 +104,19 @@ def users() -> set:
     return res
 
 
-def matching_users(usernames: list[str]) -> set:
+def user_names() -> set:
     global CLIENTS
-    res = set()
-    for k, v in CLIENTS.items():
-        if v.username in usernames:
-            res.add(v.websocket)
+    res = set(map(lambda x: x.username, CLIENTS.values()))
     return res
 
 
-
+#def matching_users(usernames: list[str]) -> set:
+#    global CLIENTS
+#    res = set()
+#    for k, v in CLIENTS.items():
+#        if v.username in usernames:
+#            res.add(v.websocket)
+#    return res
 
 
 VALUE = 0
@@ -128,12 +129,16 @@ accounts: list[User] = []
 async def on_message_receive(websocket: ServerConnection) -> None:
     global VALUE, CLIENTS
     try:
-        #USERS.add(websocket)
+        # USERS.add(websocket)
         async for msg in websocket:
-            CLIENTS[websocket.id] = Client("", websocket)
+            if websocket.id in CLIENTS:
+                CLIENTS[websocket.id].websocket = websocket
+                print("changed ws")
+            else:
+                CLIENTS[websocket.id] = Client("", websocket)
+                print("created new client")
             event = json.loads(msg)
-            print(websocket.id)
-            print(f"before {len(users())} time: {time.time()} action: {event["action"]}")
+            print(f"before {len(users())} | action: {event["action"]} | name: {CLIENTS[websocket.id].username} | Clients: {user_names()}")
             if event["action"] == "register":
                 registration(event, websocket)
 
@@ -141,6 +146,7 @@ async def on_message_receive(websocket: ServerConnection) -> None:
                 login(event, websocket)
 
             elif event["action"] == "message":
+
                 message(event)
 
             elif event["action"] == "init":
@@ -148,12 +154,13 @@ async def on_message_receive(websocket: ServerConnection) -> None:
 
             else:
                 logging.error("unsupported event: %s", event)
-    except:
-        print(f"failed to handle the event time: {time.time()}")
-    finally:
 
-        del CLIENTS[websocket.id]
-        print(f"after {len(users())} time: {time.time()}")
+    finally:
+        try:
+            del CLIENTS[websocket.id]
+        except KeyError as e:
+            print(f"ERROR: {e}")
+        print(f"after {len(users())}")
 
 
 async def main():
