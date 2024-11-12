@@ -34,6 +34,8 @@ function scrollToBottom(childContainer, parentContainer){
 });
 }
 
+let currentChannel = "global"
+
 window.addEventListener("load", () => {
    let url = window.location.hostname === "localhost"
        ? `http://localhost:6789`
@@ -54,10 +56,11 @@ window.addEventListener("load", () => {
 
 document.querySelector("#confirm-send").addEventListener("click", () => {
   let message = document.getElementById("send-message").value
-  let msg = { action: "message", content: message, user: currentUser };
+  let msg = { action: "message", content: message, user: currentUser, channel: currentChannel};
   if (currentUser.trim() !== "" && message !== ""){
     websocket.send(JSON.stringify(msg));
     document.getElementById("send-message").value = "";
+  console.log(currentChannel)
   }
 
 });
@@ -65,13 +68,25 @@ document.querySelector("#confirm-send").addEventListener("click", () => {
 document.querySelector('#send-message').addEventListener('keypress', function (e) {
   if (e.key === 'Enter') {
     let content = document.getElementById("send-message").value;
-    let msg = {action: "message", content: content, user: currentUser};
+    let msg = {action: "message", content: content, user: currentUser, channel: currentChannel};
+    console.log(msg);
     if (currentUser.trim() !== "" && content !== "") {
       websocket.send(JSON.stringify(msg));
       document.getElementById("send-message").value = "";
     }
   }
+  console.log(currentChannel)
 });
+
+document.querySelector("#join-global").addEventListener("click", () => {
+  websocket.send(JSON.stringify({action: "join-channel", channel: "global"}))
+  currentChannel = "global"
+})
+
+document.querySelector("#join-tomaten").addEventListener("click", () => {
+  websocket.send(JSON.stringify({action: "join-channel", channel: "tomaten"}))
+  currentChannel = "tomaten"
+})
 
 websocket.onmessage = onMessageReceived;
 
