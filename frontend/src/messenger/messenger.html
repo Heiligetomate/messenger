@@ -2,41 +2,114 @@
 <html lang="en">
     <head>
         <title>WebSocket demo</title>
+        <script src="messenger.js" type="module"></script>
 
         <link href="messenger.css" rel="stylesheet">
             <link href="../site.css" rel="stylesheet">
 
     </head>
+
     <body style="width: 100vw; padding: 24px; " class="global-bg">
+    <div id="messenger">
     <div style="max-width: 800px; width: 100%;">
         <p id="display-username" style="color: white; font-size: 2em">logged in as: </p>
 
         <div class="state">
             <span class="users">?</span> online
         </div>
+
         <fieldset class="fieldset">
             <legend class="legend-messages">messages</legend>
             <div id=messages class="global-font" style="overflow-y: scroll; max-height: 700px; scrollbar-width: thin; padding: 0.5em">
             </div>
         </fieldset>
 
-        <script src="messenger.js" type="module"></script>
     </div>
+    <div>
 
-
-
-    <label style="min-width: 300px; display: flex; flex-direction: row;
+    <div style="min-width: 300px; display: flex; flex-direction: row;
         justify-content: center; align-items: center; gap: 12px;">
         <input id="send-message" type="text">
         <button id="confirm-send" class="global-bg">send</button>
+        <div>
+            <input type="radio" value="Dm" id="dm" name="choose-message-type">
+            <label for="dm">Dm message</label>
+            <input type="radio" value="Channel" id="channels" name="choose-message-type" checked>
+            <label for="channels">Channel message</label>
+        </div>
+    </div>
+    <label for="channel-select" id="channel-message"> Channels:
+        <select id="channel-select">
+            <option value="global">Global</option>
+        </select>
+        <button id="join-new-channel">join channel</button>
+        <button id="new-channel">create new channel</button>
     </label>
-    <div style="flex-direction: row">
-        <button id="join-tomaten">
-            JOIN TOMATEN
-        </button>
-        <button id="join-global">
-            JOIN GLOBAL
-        </button>
+
+    </div>
+
+    
+    <div id="dm-message" style="display: none">
+        <label for="dm-select">Dm selector
+            <select id="dm-select">
+
+            </select>
+            <button id="add-dm">Add User</button>
+            
+        </label>
+    </div>
+    </div>
+    <div id="channel" style="display: none">
+        <fieldset>
+            <legend class="legend-messages">Create new channel</legend>
+            <div style="display: flex; flex-direction: column">
+                <label for="channel-name">channel name:</label>
+                <input type="text" id="channel-name">
+            </div>
+            <div style="display: flex; flex-direction: column">
+                <label for="channel-password" id="channel-password-label">channel password:</label>
+                <input type="password" id="channel-password">
+            </div>
+            <div style="">
+
+            <div>
+              <input type="radio" id="private-channel" name="public-private" value="private" checked/>
+              <label for="private-channel">Private</label>
+            </div>
+            <div>
+            <input type="radio" id="public-channel" name="public-private" value="public" />
+            <label for="public-channel">Public</label>
+            </div>
+
+
+            </div>
+
+            <button id="confirm-channel">Create channel</button>
+        </fieldset>
+        <button id="go-back">Go back</button>
+    </div>
+
+    <div id="join-channel" style="display: none">
+        <fieldset>
+            <legend class="legend-messages">Join new channel</legend>
+            <div style="display: flex; flex-direction: column">
+                <label for="join-channel-name">channel name:</label>
+                <input type="text" id="join-channel-name">
+            </div>
+            <div style="display: flex; flex-direction: column">
+                <label for="join-channel-password">channel password:</label>
+                <input type="password" id="join-channel-password">
+            </div>
+            <button id="confirm-join-channel">Join channel</button>
+        </fieldset>
+        <button id="join-channel-go-back">Go back</button>
+    </div>
+    <div id="dm-menu" style="display: none">
+        <label for="search-user">user:
+            <input type="text" id="search-user">
+        </label>
+        <button id="confirm-user">confirm</button>
+        <button id="dm-go-back">go back</button>
     </div>
 
     </body>

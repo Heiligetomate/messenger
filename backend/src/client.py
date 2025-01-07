@@ -2,10 +2,11 @@ from websockets.asyncio.server import ServerConnection
 
 
 class Client:
-    def __init__(self, username: str, websocket: ServerConnection, channels: list):
+    def __init__(self, username: str, websocket: ServerConnection, channels: list, dm_channels):
         self.username = username
         self.websocket = websocket
         self.channels = channels
+        self.dm_channels = dm_channels
 
     def check_for_double_channels(self) -> None:
         unique_channels = []
