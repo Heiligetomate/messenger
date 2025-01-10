@@ -75,19 +75,13 @@ window.addEventListener("load", () => {
 
 
 document.querySelector("#confirm-send").addEventListener("click", () => {
-  let content = document.getElementById("send-message").value
-  if (dmStatus){
-    let dmUser = document.getElementById("dm-select").value;
-    let msg = { action: "message", content: content, user: currentUser, dmUser: dmUser, isDm: true };
-  }
-  else {
-    let msg = { action: "message", content: content, user: currentUser, channel: currentChannel, isDm: false };
-  }
-  if (currentUser.trim() !== "" && content !== ""){
+  let message = document.getElementById("send-message").value
+  let msg = { action: "message", content: message, user: currentUser, channel: currentChannel};
+  if (currentUser.trim() !== "" && message !== ""){
     websocket.send(JSON.stringify(msg));
     document.getElementById("send-message").value = "";
-  }
-
+  console.log(currentChannel)
+}
 });
 
 document.querySelector('#send-message').addEventListener('keypress', function (e) {
@@ -149,36 +143,12 @@ document.querySelector("#confirm-join-channel").addEventListener("click", () => 
   websocket.send(JSON.stringify({ action: "join-new-channel", channelName: channelName, channelPassword: channelPassword } ));
 });
 
-document.querySelector("#add-dm").addEventListener("click", () => {
-  hideAndDisplay(["messenger"], "dm-menu");
-});
-
-document.querySelector("#dm-go-back").addEventListener("click", () => {
-  hideAndDisplay(["dm-menu"], "messenger");
-});
-
-document.querySelector("#confirm-user").addEventListener("click", () => {
-  let user = document.getElementById("search-user").value;
-  console.log(user)
-  websocket.send(JSON.stringify({ action: "new-dm", user: user}));
-});
-
-document.querySelector("#dm").addEventListener("click", () => {
-  hideAndDisplay(["channel-message"], "dm-message");
-  dmStatus = true;
-});
-
-document.querySelector("#channels").addEventListener("click", () => {
-  hideAndDisplay(["dm-message"], "channel-message");
-  dmStatus = false;
-});
-
-
 
 websocket.onmessage = onMessageReceived;
 
 function onMessageReceived({data}){
   const event = JSON.parse(data);
+  console.log(event.type)
   switch (event.type) {
 
     case "users":
@@ -187,17 +157,10 @@ function onMessageReceived({data}){
       break;
 
     case "message":
-      if (event.isDm){
-        let isOwn = event.user === currentUser;
-        if (event.channel === currentChannel){
-          addContent(`${event.user}(${event.timestamp}) --${event.channel}-- : ${event.content}`, "messages", isOwn);
-      }}
-      else {
-        let isOwn = event.user === currentUser;
-        if(event.user){
-          console.log("sd")
-        }
-      }
+      let isOwn = event.user === currentUser;
+      console.log(event)
+      addContent(`${event.user}(${event.timestamp}) : ${event.content}`, "messages", isOwn);
+      //scrollToBottom("messages", "message-container");
       break;
 
     case "init":
@@ -232,16 +195,6 @@ function onMessageReceived({data}){
       }
       else{
         window.alert(event.failMessage)
-      }
-      break;
-
-    case "new_dm":
-      if (event.success === true) {
-        createNewOption("dm-select", event.user);
-        hideAndDisplay(["dm-menu"], "messenger");
-      }
-      else {
-        window.alert(event.failMessage);
       }
       break;
 

@@ -20,3 +20,20 @@ services:
       - websocket-service
     environment:
       - SERVICE_URL=ws://websocket-service:6789
+
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - ./dbinit/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+volumes:
+  postgres-data:
+  dbinit:

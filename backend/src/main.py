@@ -12,7 +12,6 @@ from user_account import User
 from registration import Registration
 from client import Client
 from channel import Channel
-from dm_channel import Dm
 
 
 def users_event() -> str:
@@ -32,12 +31,8 @@ def registration_event(user_registration: Registration) -> str:
     return json.dumps({"type": "registration", "registration": json_string})
 
 
-def messages_event(event, channel=None) -> str:
-    if not channel == "":
-        return json.dumps(
-            {"type": "message", "content": event["content"], "user": event["user"], "isDm": False, "channel": channel.name,
-             "timestamp": time.strftime("%H:%M")})
-    return json.dumps({"type": "message", "content": event["content"], "user": event["user"], "isDm": True, "dmPartner":"s",
+def messages_event(event) -> str:
+    return json.dumps({"type": "message", "content": event["content"], "user": event["user"], "channel": event["channel"],
                        "timestamp": time.strftime("%H:%M")})
 
 
@@ -48,7 +43,7 @@ def old_messages_event(message_set, channel_name) -> str:
 
 def channel_messages_event(channel) -> str:
     json_string = jsonpickle.encode(channel.messages)
-    print(json_string)
+    print(f'channel_messages_event: {json_string})')
     return json.dumps({"type": "channel_messages", "messages": json_string})
 
 
@@ -66,12 +61,6 @@ def join_channel_event(success, channel=None, fail_message="") -> str:
         return json.dumps({"type": "join_new_channel", "success": False, "failMessage": fail_message})
 
 
-def dm_message_event(success, user_name=None, fail_message="") -> str:
-    if success:
-        return json.dumps({"type": "new_dm", "success": True, "user": user_name})
-    return json.dumps({"type": "new_dm", "success": False, "failMessage": fail_message})
-
-
 def find_channels(user_channels) -> list[Channel]:
     valid_channels = []
     for channel in channels:
@@ -85,12 +74,6 @@ def find_channel(channel_name) -> Channel:
     for channel in channels:
         if channel.name == channel_name:
             print(channel, channel_name, channel.name)
-            return channel
-
-
-def find_dm(dms: list):
-    for channel in dm_channels:
-        if dms[0] in channel.members and dms[1] in channel.members:
             return channel
 
 
@@ -127,21 +110,19 @@ def login(event, websocket) -> None:
     if login_success:
         broadcast([websocket], login_event(user))
         for channel in CLIENTS[websocket.id].channels:
-            broadcast([websocket], old_messages_event(channel.messages))
+            broadcast([websocket], old_messages_event(channel.messages, channel.name))
     else:
         broadcast([websocket], login_failed_event())
 
 
 def message(event) -> None:
-    if not event["isDm"]:
-        channel = find_channel(event["channel"])
-        message_content = messages_event(event, channel)
-        broadcast(get_us .append(msg)
-    else:
-        channel = find_dm(event["dmUser"])
-        msg = Message(event["content"], event["user"], time.strftime("%H:%M"))
-        channel.messages.append(msg)
-        broadcast(channel.members, messages_event(event))
+    channel = find_channel(event["channel"])
+    message_content = messages_event(event)
+    user = get_users_with_channel(channel.name)
+    print("USER:", user)
+    broadcast(user, message_content)
+    msg = Message(event["content"], event["user"], time.strftime("%H:%M"))
+    channel.messages.append(msg)
 
 
 def init(event, websocket) -> None:
@@ -166,13 +147,19 @@ def user_names() -> set:
     return res
 
 
-def get_user_with_channel(channel) -> list:
+def get_users_with_channel(channel: str) -> list:
     valid_users = []
     for k, v in CLIENTS.items():
-        for n in v.channels:
-            if n == channel:
+        for c in v.channels:
+            print(f'channel to compare: {c}')
+            if c.name == channel:
                 valid_users.append(v.websocket)
     return valid_users
+
+
+# def join_channel(event, websocket) -> None:
+#    CLIENTS[websocket.id].channels.append(event["channel"])
+#    CLIENTS[websocket.id].check_for_double_channels()
 
 
 def get_websocket_with_name(name):
@@ -227,25 +214,12 @@ def new_channel(event, websocket) -> None:
     print("CHANNEL:", channel.name, channel.public_private, channel.password)
 
 
-def new_dm(event, websocket) -> None:
-    dm_user = get_websocket_with_name(event["user"])
-    if dm_user is None:
-        broadcast([websocket], dm_message_event(False, fail_message="User does not exist"))
-        return None
-    dm_channel = Dm([dm_user, CLIENTS[websocket.id]], [])
-    CLIENTS[websocket.id].dm_channels.append(dm_channel)
-    CLIENTS[dm_user.id].dm_channels.append(dm_channel)
-    broadcast([websocket], dm_message_event(True, CLIENTS[dm_user.id].username))
-    broadcast([dm_user], dm_message_event(True, CLIENTS[websocket.id].username))
-
-
 VALUE = 0
 
-messages = []
 
 global_channel = Channel("global", "public")
 channels = [global_channel]
-dm_channels = []
+
 
 accounts: list[User] = []
 
@@ -262,11 +236,18 @@ async def on_message_receive(websocket: ServerConnection) -> None:
                 CLIENTS[websocket.id].websocket = websocket
                 print("changed ws")
             else:
-                CLIENTS[websocket.id] = Client("", websocket, [global_channel], [])
+                CLIENTS[websocket.id] = Client("", websocket, [global_channel])
                 print("created new client")
             event = json.loads(msg)
             print(
-                f"before {len(users())} | action: {event["action"]} | name: {CLIENTS[websocket.id].username} | Clients: {user_names()} channels:{CLIENTS[websocket.id].channels}")
+                f"before {len(users())} | action: {event["action"]} | name: {CLIENTS[websocket.id].username} | Clients: "
+                f"{user_names()} ")
+            ch = ''
+            for c in CLIENTS[websocket.id].channels:
+                ch += c.name
+
+            print(ch)
+
             if event["action"] == "register":
                 registration(event, websocket)
 
@@ -287,9 +268,6 @@ async def on_message_receive(websocket: ServerConnection) -> None:
 
             elif event["action"] == "join-new-channel":
                 join_new_channel(event, websocket)
-
-            elif event["action"] == "new-dm":
-                new_dm(event, websocket)
 
             else:
                 logging.error("unsupported event: %s", event)

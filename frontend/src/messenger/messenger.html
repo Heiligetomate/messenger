@@ -31,12 +31,6 @@
         justify-content: center; align-items: center; gap: 12px;">
         <input id="send-message" type="text">
         <button id="confirm-send" class="global-bg">send</button>
-        <div>
-            <input type="radio" value="Dm" id="dm" name="choose-message-type">
-            <label for="dm">Dm message</label>
-            <input type="radio" value="Channel" id="channels" name="choose-message-type" checked>
-            <label for="channels">Channel message</label>
-        </div>
     </div>
     <label for="channel-select" id="channel-message"> Channels:
         <select id="channel-select">
@@ -48,16 +42,7 @@
 
     </div>
 
-    
-    <div id="dm-message" style="display: none">
-        <label for="dm-select">Dm selector
-            <select id="dm-select">
 
-            </select>
-            <button id="add-dm">Add User</button>
-            
-        </label>
-    </div>
     </div>
     <div id="channel" style="display: none">
         <fieldset>
@@ -103,13 +88,6 @@
             <button id="confirm-join-channel">Join channel</button>
         </fieldset>
         <button id="join-channel-go-back">Go back</button>
-    </div>
-    <div id="dm-menu" style="display: none">
-        <label for="search-user">user:
-            <input type="text" id="search-user">
-        </label>
-        <button id="confirm-user">confirm</button>
-        <button id="dm-go-back">go back</button>
     </div>
 
     </body>
