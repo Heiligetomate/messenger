@@ -25,10 +25,12 @@ create table user_account_in_channel
 (
     user_account_fk varchar(20) not null
         constraint user_account_in_channel_user_account_user_name_fk
-            references user_account,
+            references user_account
+            on delete cascade,
     channel_fk      varchar(20) not null
         constraint user_account_in_channel_channel_channel_name_fk
             references channel
+            on delete cascade
 );
 
 alter table user_account_in_channel
@@ -42,14 +44,17 @@ create table message
     time_stamp      timestamp with time zone default CURRENT_TIMESTAMP     not null,
     sender_fk       varchar(20)                                            not null
         constraint message_user_account_user_name_fk
-            references user_account,
+            references user_account
+            on delete cascade,
     content         varchar(8096)            default ''::character varying not null,
     receiver_fk     varchar(20)
         constraint message_user_account_user_name_fk_2
-            references user_account,
+            references user_account
+            on delete cascade,
     channel_name_fk varchar(20)
         constraint message_channel_channel_name_fk
             references channel
+            on delete cascade
 );
 
 alter table message

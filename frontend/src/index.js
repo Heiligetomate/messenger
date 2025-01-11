@@ -64,7 +64,9 @@ function onMessageReceived({data}){
               save(1, event.user)
               goToRoute(messengerUrl);
           }
-          save(true, event.user);
+          else {
+              window.alert("Wrong username or password")
+          }
           break;
     default:
       console.error("unsupported event", event);

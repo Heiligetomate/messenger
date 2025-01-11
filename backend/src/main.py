@@ -12,23 +12,29 @@ from user_account import User
 from registration import Registration
 from client import Client
 from channel import Channel
+from data_base_models import UserAccount
+from messenger_repository import MessengerRepository
+
+
+cnx = MessengerRepository()
 
 
 def users_event() -> str:
     return json.dumps({"type": "users", "users": len(users())})
 
 
-def login_event(username: str) -> str:
-    return json.dumps({"type": "login", "user": username, "success": True})
+def login_event(success: bool, user_name="") -> str:
+    if success:
+        return json.dumps({"type": "login", "user": user_name, "success": True})
+    return json.dumps({"type": "login", "success": False})
 
 
 def login_failed_event() -> str:
     return json.dumps({"type": "login", "success": False})
 
 
-def registration_event(user_registration: Registration) -> str:
-    json_string = jsonpickle.encode(user_registration)
-    return json.dumps({"type": "registration", "registration": json_string})
+def registration_event(user_name, success) -> str:
+    return json.dumps({"type": "registration", "user": user_name, "success": success})
 
 
 def messages_event(event) -> str:
@@ -78,51 +84,33 @@ def find_channel(channel_name) -> Channel:
 
 
 def registration(event, websocket) -> None:
-    user = event["user"]
-    registration_success = True
-    for account in accounts:
-        if account.username.lower() == user.lower():
-            registration_success = False
-            break
-    user = User(event["user"], event["password"])
-    if len(event["password"]) < 4:
-        registration_success = False
-        success_message = "Password must be at least 4 characters long"
-    elif registration_success:
-        accounts.append(user)
-        print(f"new register: {event['user']} password: {event['password']}")
-        success_message = f"you created the account {user.username} successfully"
-    else:
-        success_message = "user already exists"
-    new_user = Registration(user.username, success_message)
-    broadcast([websocket], registration_event(new_user))
+    user_name = event["user"]
+    password = event["password"]
+    registration_success = cnx.is_new_user_created(user_name, password)
+    broadcast([websocket], registration_event(user_name, registration_success))
 
 
 def login(event, websocket) -> None:
-    user = event["user"]
+    user_name = event["user"]
     password = event["password"]
-    login_success = False
-    for account in accounts:
-        if account.username.lower() == user.lower() and account.password == password:
-            login_success = True
-            break
-    # broadcast(USERS, users_event())
-    if login_success:
-        broadcast([websocket], login_event(user))
-        for channel in CLIENTS[websocket.id].channels:
-            broadcast([websocket], old_messages_event(channel.messages, channel.name))
+
+    is_found, user = cnx.is_user_found(user_name)
+    if is_found and password == user.password:
+        broadcast([websocket], login_event(True, user_name=user_name))
     else:
-        broadcast([websocket], login_failed_event())
+        broadcast([websocket], login_event(False))
+
+    #for channel in CLIENTS[websocket.id].channels:
+    #        broadcast([websocket], old_messages_event(channel.messages, channel.name))
+    #else:
+    #    broadcast([websocket], login_failed_event())
 
 
 def message(event) -> None:
-    channel = find_channel(event["channel"])
-    message_content = messages_event(event)
-    user = get_users_with_channel(channel.name)
-    print("USER:", user)
-    broadcast(user, message_content)
-    msg = Message(event["content"], event["user"], time.strftime("%H:%M"))
-    channel.messages.append(msg)
+    if cnx.is_new_message_created(event["user"], event["content"], channel=event["channel"]):
+        user_name: list = cnx.get_all_users_by_channel(event["channel"])
+        message_content = messages_event(event)
+        broadcast(get_websockets_by_user_name(user_name), message_content)
 
 
 def init(event, websocket) -> None:
@@ -156,6 +144,15 @@ def get_users_with_channel(channel: str) -> list:
                 valid_users.append(v.websocket)
     return valid_users
 
+
+def get_websockets_by_user_name(user_name: list) -> list:
+    websockets = []
+    for user in user_name:
+        for k, v in CLIENTS.items():
+            if v.username == user:
+                websockets.append(v.websocket)
+                break
+    return websockets
 
 # def join_channel(event, websocket) -> None:
 #    CLIENTS[websocket.id].channels.append(event["channel"])
@@ -242,11 +239,6 @@ async def on_message_receive(websocket: ServerConnection) -> None:
             print(
                 f"before {len(users())} | action: {event["action"]} | name: {CLIENTS[websocket.id].username} | Clients: "
                 f"{user_names()} ")
-            ch = ''
-            for c in CLIENTS[websocket.id].channels:
-                ch += c.name
-
-            print(ch)
 
             if event["action"] == "register":
                 registration(event, websocket)

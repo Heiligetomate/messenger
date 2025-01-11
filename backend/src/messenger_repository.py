@@ -1,28 +1,92 @@
+from typing import Any
+
 import pydapper
-from data_base_models import UserAccount
+from psycopg2.errors import UniqueViolation
+from pydapper.exceptions import NoResultException
+
+from backend.src import channel
+from data_base_models import *
+
+
+def map_to_strings_from_dictionary(values: list[dict[Any]]) -> list[str]:
+    messages = []
+    for d in values:
+        for k, v in d.items():
+            messages.append(v)
+    return messages
 
 
 class MessengerRepository:
     def __init__(self):
         self.connection = "postgresql+psycopg2://postgres:mysecretpassword@127.0.0.1:5433"
 
+    def is_new_user_created(self, user_name, password) -> bool:
+        with pydapper.connect(self.connection) as commands:
+            try:
+                rowcount = commands.execute(
+                    "insert into user_account (user_name, password) values (?1?, ?2?)",
+                    param={"1": password, "2": user_name}
+                )
+                if rowcount == 1:
+                    rowcount = commands.execute(
+                        "insert into user_account_in_channel (user_account_fk, channel_fk) values (?1?, 'global')",
+                        param={"1": user_name}
+                    )
+            except UniqueViolation as e:
+                print(e)
+                return False
+
+        return rowcount == 1
+
+    def is_new_channel_created(self, channel_name: str, password: str, is_public: bool, user_name: str) -> bool:
+        with pydapper.connect(self.connection) as commands:
+            rowcount = commands.execute(
+                "insert into channel (channel_name, password, is_public) values (?1?, ?2?, ?3?)",
+                param={"1": channel_name, "2": password, "3": is_public}
+            )
+            if rowcount == 1:
+                rowcount = commands.execute(
+                    "insert into user_account_in_channel (channel_fk, user_account_fk) values (?1?, ?2?)",
+                    param={"1": channel_name, "2": user_name}
+                )
+        return rowcount == 1
+
     def get_all_users(self) -> list[UserAccount]:
         with pydapper.connect(self.connection) as commands:
             users = commands.query("select user_name, password from user_account;", model=UserAccount)
         return users
 
-    def is_change_password_success(self, user_name, new_password) -> bool:
-        with pydapper.connect(self.connection) as commands:
-            rowcount = commands.execute(
-                "update user_account set password = ?1? where user_name = ?2?",
-                param={"1": new_password, "2": user_name}
-            )
-        return rowcount == 1
+    def get_all_users_by_channel(self, channel_name) -> list[str]:
+        try:
+            with pydapper.connect(self.connection) as commands:
+                users = commands.query("select user_account_fk from user_account_in_channel where channel_fk=?1?;",
+                                       param={"1": channel_name})
+            return map_to_strings_from_dictionary(users)
+        except NoResultException:
+            return []
 
-    def is_new_user_created(self, user_name, password) -> bool:
+    def is_user_found(self, user_name) -> (bool, UserAccount | None):
+        with pydapper.connect(self.connection) as commands:
+            try:
+                user = commands.query_single("select user_name, password from user_account where user_name=?1?;",
+                                             model=UserAccount, param={"1": user_name})
+                return True, user
+            except NoResultException:
+                return False, None
+
+    def is_channel_found(self, channel_name) -> (bool, Channel | None):
+        with pydapper.connect(self.connection) as commands:
+            try:
+                channel = commands.query_single("select channel_name, password, is_public from channel "
+                                                "where channel_name=?1?;", model=Channel, param={"1": channel_name})
+                return True, channel
+            except NoResultException:
+                return False, None
+
+    def is_new_message_created(self, sender, content, channel=None, dm=None) -> bool:
         with pydapper.connect(self.connection) as commands:
             rowcount = commands.execute(
-                "insert into user_account (user_name, password) values (?1?, ?2?)",
-                param={"1": password, "2": user_name}
+                "insert into message (sender_fk, receiver_fk, channel_name_fk, content) "
+                "values (?1?, ?2?, ?3?, ?4?)", param={"1": sender, "2": dm, "3": channel, "4": content}
             )
         return rowcount == 1

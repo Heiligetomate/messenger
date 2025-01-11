@@ -8,7 +8,9 @@ class UserAccount:
 
 
 @dataclass
-class UserAccount:
-    user_name: str
+class Channel:
+    channel_name: str
+    is_public: bool
     password: str
+
 

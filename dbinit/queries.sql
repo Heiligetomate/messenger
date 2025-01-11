@@ -49,7 +49,12 @@ WHERE user_account_in_channel.user_account_fk = 'Juri';
 SELECT * FROM message where channel_name_fk = 'Gurke';
 
 
+SELECT distinct channel_fk, is_public
+FROM user_account_in_channel uac
+JOIN channel c ON uac.channel_fk = c.channel_name
+WHERE user_account_fk='123';
 
+insert into user_account_in_channel (user_account_fk, channel_fk) values ('123', 'juris-kanal');
 
 
 SELECT * FROM channel;
@@ -62,4 +67,16 @@ WHERE channel_name_fk IS NOT NULL
 
 SELECT id, time_stamp, sender_fk, content, channel_name_fk FROM message WHERE channel_name_fk IS NOT NULL;
 
-INSERT INTO user_account (password, user_name) VALUES ('123', 'Keule')
+INSERT INTO user_account (password, user_name) VALUES ('123', 'Keule');
+
+
+
+alter table public.message
+drop constraint message_user_account_user_name_fk_2,
+add constraint message_user_account_user_name_fk_2
+   foreign key (receiver_fk)
+   references user_account(user_name)
+   on delete cascade;
+
+
+
