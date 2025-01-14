@@ -110,7 +110,7 @@ document.querySelector("#confirm-channel").addEventListener("click", () => {
   let channelPassword = document.getElementById("channel-password").value;
   let publicPrivate =  document.querySelector('input[name="public-private"]:checked').value;
   console.log(channelName, channelPassword, publicPrivate)
-  websocket.send(JSON.stringify( {action: "new-channel", channelName: channelName, channelPassword:channelPassword, publicPrivate: publicPrivate} ))
+  websocket.send(JSON.stringify( {action: "new-channel", channelName: channelName, channelPassword:channelPassword, publicPrivate: publicPrivate, user: currentUser} ))
 });
 
 document.querySelector("#channel-select").addEventListener('change', () => {
@@ -140,7 +140,7 @@ document.querySelector("#join-channel-go-back").addEventListener("click", () => 
 document.querySelector("#confirm-join-channel").addEventListener("click", () => {
   let channelName = document.getElementById("join-channel-name").value;
   let channelPassword = document.getElementById("join-channel-password").value;
-  websocket.send(JSON.stringify({ action: "join-new-channel", channelName: channelName, channelPassword: channelPassword } ));
+  websocket.send(JSON.stringify({ action: "join-new-channel", channelName: channelName, channelPassword: channelPassword, user: currentUser } ));
 });
 
 

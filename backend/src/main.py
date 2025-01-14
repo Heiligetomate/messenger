@@ -53,9 +53,9 @@ def channel_messages_event(channel) -> str:
     return json.dumps({"type": "channel_messages", "messages": json_string})
 
 
-def new_channel_event(success, channel=None, fail_message="") -> str:
+def new_channel_event(success, channel_name=None, fail_message="") -> str:
     if success:
-        return json.dumps({"type": "new_channel", "success": True, "channelName": channel.name})
+        return json.dumps({"type": "new_channel", "success": True, "channelName": channel_name})
     else:
         return json.dumps({"type": "new_channel", "success": False, "failMessage": fail_message})
 
@@ -174,42 +174,37 @@ def join_channel(event, websocket) -> None:
 
 def join_new_channel(event, websocket) -> None:
     fail_message = "Channel does not exist"
-    for channel in channels:
-        if channel.name == event["channelName"]:
-            if channel.public_private == "public":
-                if channel not in CLIENTS[websocket.id].channels:
-                    CLIENTS[websocket.id].channels.append(channel)
-                    broadcast([websocket], join_channel_event(True, channel=channel))
-                    return None
-                else:
-                    fail_message = "Already joined"
-            elif channel.public_private == "private":
-                if channel.password == event["channelPassword"]:
-                    if channel not in CLIENTS[websocket.id].channels:
-                        CLIENTS[websocket.id].channels.append(channel)
-                        broadcast([websocket], join_channel_event(True, channel=channel))
-                        return None
-                    else:
-                        fail_message = "Already joined"
-                else:
-                    fail_message = "Wrong Password"
-    broadcast([websocket], join_channel_event(False, fail_message=fail_message))
+    join_success = False
+    is_found, channel = cnx.is_channel_found(event["channelName"])
+    is_user_already_joined = cnx.is_user_in_channel(event["user"], event["channelName"])
+
+    if is_found:
+        if channel.is_public:
+            join_success = True
+        else:
+            if channel.password == event["password"]:
+                join_success = True
+            fail_message = "wrong password"
+    if not is_user_already_joined:
+        fail_message = "Already joined"
+    if join_success:
+        broadcast([websocket], join_channel_event(True, channel=event["channelName"]))
+    else:
+        broadcast([websocket], join_channel_event(False, fail_message=fail_message))
 
 
 def new_channel(event, websocket) -> None:
-    if len(event["channelName"]) < 3:
-        broadcast([websocket], new_channel_event(False, fail_message="Channel name too short"))
-        return None
-    for channel in channels:
-        if channel.name == event["channelName"]:
-            broadcast([websocket], new_channel_event(False, fail_message="Channel already exists"))
-            return None
-    channel = Channel(event["channelName"], event["publicPrivate"], event["channelPassword"])
-    channels.append(channel)
-    CLIENTS[websocket.id].channels.append(channel)
-    broadcast([websocket], new_channel_event(True, channel=channel))
-    print("CHANNEL:", channel.name, channel.public_private, channel.password)
+    channel_name = event["channelName"]
+    channel_password = event["channelPassword"]
+    user = event["user"]
+    if event["publicPrivate"] == "public":
+        cnx.is_new_channel_created(channel_name, channel_password, True)
+        cnx.is_joined_channel(channel_name, user)
+    else:
+        cnx.is_new_channel_created(channel_name, channel_password, False)
+        cnx.is_joined_channel(channel_name, user)
 
+    broadcast([websocket], new_channel_event(True, channel_name=channel_name))
 
 VALUE = 0
 

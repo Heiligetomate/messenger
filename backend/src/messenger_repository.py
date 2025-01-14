@@ -38,18 +38,28 @@ class MessengerRepository:
 
         return rowcount == 1
 
-    def is_new_channel_created(self, channel_name: str, password: str, is_public: bool, user_name: str) -> bool:
-        with pydapper.connect(self.connection) as commands:
-            rowcount = commands.execute(
-                "insert into channel (channel_name, password, is_public) values (?1?, ?2?, ?3?)",
-                param={"1": channel_name, "2": password, "3": is_public}
-            )
-            if rowcount == 1:
+    def is_new_channel_created(self, channel_name: str, password: str, is_public: bool) -> bool:
+        try:
+            with pydapper.connect(self.connection) as commands:
+                rowcount = commands.execute(
+                    "insert into channel (channel_name, password, is_public) values (?1?, ?2?, ?3?)",
+                    param={"1": channel_name, "2": password, "3": is_public}
+                )
+                return rowcount == 1
+        except UniqueViolation as e:
+            print(e)
+            return False
+
+    def is_joined_channel(self, channel_name: str, user_name: str) -> bool:
+        try:
+            with pydapper.connect(self.connection) as commands:
                 rowcount = commands.execute(
                     "insert into user_account_in_channel (channel_fk, user_account_fk) values (?1?, ?2?)",
                     param={"1": channel_name, "2": user_name}
                 )
-        return rowcount == 1
+                return True
+        except NoResultException:
+            return False
 
     def get_all_users(self) -> list[UserAccount]:
         with pydapper.connect(self.connection) as commands:
@@ -90,3 +100,12 @@ class MessengerRepository:
                 "values (?1?, ?2?, ?3?, ?4?)", param={"1": sender, "2": dm, "3": channel, "4": content}
             )
         return rowcount == 1
+
+    def is_user_in_channel(self, user_name, channel_name) -> bool:
+        with pydapper.connect(self.connection) as commands:
+            try:
+                commands.query_single("select channel_fk from user_account_in_channel where user_account_fk=?1? "
+                                      "and channel_fk=?2?;", param={"1": user_name, "2": channel_name})
+                return True
+            except NoResultException:
+                return False
