@@ -1,4 +1,9 @@
 import { getFromStorage } from "../shared.js";
+import { Cache } from "../cache.js"
+
+
+let cache = null;
+
 
 function createParagraph(content){
   let p = document.createElement("p");
@@ -6,12 +11,32 @@ function createParagraph(content){
     return p;
 }
 
-function addContent(content, elementId, isOwnMessage){
+function onDeleteMessageButtonClicked(messageId){
+  console.log("delete message with id clicked " + messageId)
+}
+
+function addMessageElementToDOM(message, elementId){
    let elem = document.getElementById(elementId);
-   let p = createParagraph(content)
-   let cssClass = isOwnMessage ?  "p-right" : "p-left";
+   let isOwner = message.isOwner;
+   let p = createParagraph(message.concatenatedContent)
+  console.log(message.concatenatedContent)
+   let cssClass = message.isOwner ?  "p-right" : "p-left";
    p.classList.add(cssClass);
-   elem.append(p)
+   if (isOwner){
+     let container = document.createElement("div");
+     let containerCss= "message-container";
+     let buttonCss = "message-delete-button"
+     let button = document.createElement("button");
+     button.onclick = function(){ onDeleteMessageButtonClicked(message.id) }
+     button.classList.add(buttonCss);
+     button.append("löschen");
+     container.classList.add(containerCss);
+     container.append(button);
+     container.append(p);
+     elem.append(container);
+   } else {
+    elem.append(p)
+   }
 }
 
 function deleteMessages(elementId) {
@@ -69,7 +94,8 @@ window.addEventListener("load", () => {
   }
   let currentUser = getFromStorage(true)
   changeUserDisplay(currentUser);
-
+  console.log(currentUser)
+  cache = new Cache(currentUser);
   websocket.onopen = () => websocket.send(JSON.stringify({ action: "init", user: currentUser }));
 
 
@@ -114,9 +140,8 @@ document.querySelector("#confirm-channel").addEventListener("click", () => {
 });
 
 document.querySelector("#channel-select").addEventListener('change', () => {
-  let channel = document.getElementById("channel-select").value;
-  currentChannel = channel;
-  websocket.send(JSON.stringify( {action: "select-channel", channel: channel, currentChannel: currentChannel} )); //joa wa Keule guck mal an und vergiss nicht
+  currentChannel = document.getElementById("channel-select").value;
+  websocket.send(JSON.stringify( {action: "select-channel", channel: currentChannel, currentChannel: currentChannel} )); //joa wa Keule guck mal an und vergiss nicht
 });
 
 document.querySelector("#public-channel").addEventListener("click", () => {
@@ -146,6 +171,15 @@ document.querySelector("#confirm-join-channel").addEventListener("click", () => 
 
 websocket.onmessage = onMessageReceived;
 
+
+function instantiateMultipleMessages(messages){
+  cache.initMessages(messages)
+  cache.getMessages().forEach((m, _) => {
+    console.log(m)
+    addMessageElementToDOM(m, "messages")
+  });
+}
+
 function onMessageReceived({data}){
   const event = JSON.parse(data);
   console.log(event.type)
@@ -157,27 +191,36 @@ function onMessageReceived({data}){
       break;
 
     case "message":
-      let isOwn = event.user === currentUser;
+      //let isOwn = event.user === currentUser;
       console.log(event)
       if (event.channel === currentChannel){
-        addContent(`${event.user}(${event.timestamp}) : ${event.content}`, "messages", isOwn);
+        //addMessageElementToDOM(`${event.user}(${event.timestamp}) : ${event.content}`, "messages", isOwn);
+        let message = JSON.parse(event.message);
+        addMessageElementToDOM(message, "messages")
       }
       //scrollToBottom("messages", "message-container");
       break;
 
     case "init":
+      console.log(event.channelNames)
+      event.channelNames.forEach((item, _) => {
+        createNewOption("channel-select", item.channel_fk);
+      });
+      cache.initChannels(event.channelNames);
+
       document.getElementById("messages").innerHTML = "";
-      createNewOption("channel-select", event.channelName)
+      console.log("init channel messages " + event)
+        console.log(event.messages);
+      const messages = JSON.parse(event.messages)
+      instantiateMultipleMessages(messages)
       break;
 
     case "channel_messages":
       deleteMessages("messages")
-      const message_array = JSON.parse(event.messages)
-      console.log(message_array)
-      message_array.forEach((item, _) => {
-        let isOwn = item.user === currentUser;
-        addContent(`${item.user}(${item.timestamp}) : ${item.content}`, "messages", isOwn);
-      });
+      const message = JSON.parse(event.message)
+        console.log(message);
+        console.log([message]);
+      instantiateMultipleMessages([message])
       break;
 
     case "new_channel":

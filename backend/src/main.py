@@ -7,13 +7,11 @@ import uuid
 import jsonpickle
 
 from websockets.asyncio.server import broadcast, serve, ServerConnection
-from message import Message
 from user_account import User
-from registration import Registration
 from client import Client
 from channel import Channel
-from data_base_models import UserAccount
 from messenger_repository import MessengerRepository
+from messagedto import MessageDto
 
 
 cnx = MessengerRepository()
@@ -37,18 +35,18 @@ def registration_event(user_name, success) -> str:
     return json.dumps({"type": "registration", "user": user_name, "success": success})
 
 
-def messages_event(event) -> str:
-    return json.dumps({"type": "message", "content": event["content"], "user": event["user"], "channel": event["channel"],
-                       "timestamp": time.strftime("%H:%M")})
+def messages_event(msg: MessageDto) -> str:
+    json_message = jsonpickle.encode(msg)
+    return json.dumps({"type": "message", "payload": json_message})
 
 
-def old_messages_event(message_set, channel_name) -> str:
-    json_string = jsonpickle.encode(message_set)
-    return json.dumps({"type": "init", "messages": json_string, "channelName": channel_name})
+def init_event(messages: list[MessageDto], channel_names: list[str]) -> str:
+    messages = jsonpickle.encode(messages)
+    return json.dumps({"type": "init", "messages": messages, "channelNames": channel_names})
 
 
-def channel_messages_event(channel) -> str:
-    json_string = jsonpickle.encode(channel.messages)
+def channel_messages_event(messages: list[MessageDto]) -> str:
+    json_string = jsonpickle.encode(messages)
     print(f'channel_messages_event: {json_string})')
     return json.dumps({"type": "channel_messages", "messages": json_string})
 
@@ -102,20 +100,21 @@ def login(event, websocket) -> None:
 
 
 def message(event) -> None:
-    if cnx.is_new_message_created(event["user"], event["content"], channel=event["channel"]):
+    msg, is_created = cnx.is_new_message_created(event["user"], event["content"], chn=event["channel"])
+    if is_created:
         user_name: list = cnx.get_all_users_by_channel(event["channel"])
-        message_content = messages_event(event)
+        message_content = messages_event(msg)
         broadcast(get_websockets_by_user_name(user_name), message_content)
 
 
 def init(event, websocket) -> None:
-    valid_channels = find_channels(CLIENTS[websocket.id].channels)
-    print(valid_channels)
-    for channel in valid_channels:
-        print(channel.name)
-        broadcast([websocket], old_messages_event(channel.messages, channel.name))
     CLIENTS[websocket.id].username = event["user"]
-    print(f"id on init event: {websocket.id}")
+    valid_channels = cnx.get_all_channels_by_user_name(CLIENTS[websocket.id].username)
+    print(valid_channels)
+    messages = cnx.get_all_messages_by_channel_name("global")
+    print(messages)
+    broadcast([websocket], init_event(messages, valid_channels))
+
 
 
 def users() -> set:
@@ -162,9 +161,11 @@ def get_websocket_with_name(name):
 
 
 def join_channel(event, websocket) -> None:
-    for channel in channels:
-        if channel.name == event["currentChannel"]:
-            broadcast([websocket], channel_messages_event(channel))
+    is_found, channel = cnx.is_channel_found(event["currentChannel"])
+    print(channel.channel_name)
+    if is_found:
+        messages = cnx.get_all_messages_by_channel_name(channel.channel_name)
+        broadcast([websocket], channel_messages_event(messages))
 
 
 def join_new_channel(event, websocket) -> None:
@@ -226,7 +227,7 @@ async def on_message_receive(websocket: ServerConnection) -> None:
                 CLIENTS[websocket.id].websocket = websocket
                 print("changed ws")
             else:
-                CLIENTS[websocket.id] = Client("", websocket, [global_channel])
+                CLIENTS[websocket.id] = Client("", websocket)
                 print("created new client")
             event = json.loads(msg)
             print(

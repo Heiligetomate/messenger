@@ -4,9 +4,8 @@ import psycopg2.errors
 import pydapper
 from psycopg2.errors import UniqueViolation
 from pydapper.exceptions import NoResultException
-
-from backend.src import channel
 from data_base_models import *
+from messagedto import MessageDto
 
 
 def map_to_strings_from_dictionary(values: list[dict[Any]]) -> list[str]:
@@ -15,6 +14,19 @@ def map_to_strings_from_dictionary(values: list[dict[Any]]) -> list[str]:
         for k, v in d.items():
             messages.append(v)
     return messages
+
+
+def map_to_dto(src: Message) -> MessageDto:
+    ts = f'{src.time_stamp.strftime("%Y%m%dT%H%M%SZ")}'
+    return MessageDto(src.content, src.sender_fk, ts, src.id, src.channel_id)
+
+
+def map_to_dtos(messages: list[Message]) -> list[MessageDto]:
+    results = []
+    for message in messages:
+        dto = map_to_dto(message)
+        results.append(dto)
+    return results
 
 
 class MessengerRepository:
@@ -76,6 +88,49 @@ class MessengerRepository:
         except NoResultException:
             return []
 
+    def get_all_channels_by_user_name(self, user_name) -> list[str]:
+        try:
+            with pydapper.connect(self.connection) as commands:
+                channels = commands.query(
+                    """
+                    select channel_fk 
+                    from user_account_in_channel 
+                    where user_account_fk=?1?;""",
+                    param={"1": user_name})
+            return channels
+        except NoResultException:
+            return []
+
+    def get_all_messages_by_channel_name(self, channel_name) -> list[MessageDto]:
+        try:
+            with pydapper.connect(self.connection) as commands:
+                messages = commands.query(
+                    """
+                    select content, time_stamp, sender_fk, id, channel_name_fk as channel_id
+                    from message            
+                    where channel_name_fk=?1?;
+                    """,
+                    param={"1": channel_name}, model=Message)
+            return map_to_dtos(messages)
+        except NoResultException:
+            return []
+
+    def is_message_found(self, message_id) -> (bool, MessageDto | None):
+        try:
+            with pydapper.connect(self.connection) as commands:
+                message = commands.query_single(
+                    """
+                    select content, time_stamp, sender_fk, id, channel_name_fk as channel_id
+                    from message
+                    where id=?1?;
+                    """,
+                    param={"1": message_id}, model=Message)
+            if message is not None:
+                return True, map_to_dto(message)
+        except NoResultException as e:
+            print(e)
+            return False, None
+
     def is_user_found(self, user_name) -> (bool, UserAccount | None):
         with pydapper.connect(self.connection) as commands:
             try:
@@ -94,13 +149,25 @@ class MessengerRepository:
             except NoResultException:
                 return False, None
 
-    def is_new_message_created(self, sender, content, channel=None, dm=None) -> bool:
+    def is_new_message_created(self, sender, content, chn=None, dm=None) -> (MessageDto, bool):
         with pydapper.connect(self.connection) as commands:
-            rowcount = commands.execute(
+            message_id = commands.query_single(
                 "insert into message (sender_fk, receiver_fk, channel_name_fk, content) "
-                "values (?1?, ?2?, ?3?, ?4?)", param={"1": sender, "2": dm, "3": channel, "4": content}
+                "values (?1?, ?2?, ?3?, ?4?) RETURNING id;", param={"1": sender, "2": dm, "3": chn, "4": content}
             )
-        return rowcount == 1
+        if message_id is None:
+            new_message = self.is_message_found(message_id)
+            return new_message, new_message is not None
+        return None, False
+
+
+    def is_message_deleted(self, message_id) -> bool:
+        with pydapper.connect(self.connection) as commands:
+            row_count = commands.execute(
+                "delete from message where id = ?1?", param={"1":  message_id}
+            )
+            return row_count == 1
+
 
     def is_user_in_channel(self, user_name, channel_name) -> bool:
         with pydapper.connect(self.connection) as commands:

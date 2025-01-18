@@ -60,3 +60,13 @@ body {
 .global-font{
     color: white;
 }
+
+.message-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.message-delete-button {
+    max-height: 36px;
+}
