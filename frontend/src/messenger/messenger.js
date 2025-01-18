@@ -108,9 +108,9 @@ document.querySelector("#go-back").addEventListener("click", () => {
 document.querySelector("#confirm-channel").addEventListener("click", () => {
   let channelName = document.getElementById("channel-name").value;
   let channelPassword = document.getElementById("channel-password").value;
-  let publicPrivate =  document.querySelector('input[name="public-private"]:checked').value;
-  console.log(channelName, channelPassword, publicPrivate)
-  websocket.send(JSON.stringify( {action: "new-channel", channelName: channelName, channelPassword:channelPassword, publicPrivate: publicPrivate, user: currentUser} ))
+  let isPublic =  document.querySelector('input[name="is-public"]:checked').value === "1";
+  console.log(channelName, channelPassword, isPublic)
+  websocket.send(JSON.stringify( {action: "new-channel", channelName: channelName, channelPassword:channelPassword, isPublic: isPublic, user: currentUser} ))
 });
 
 document.querySelector("#channel-select").addEventListener('change', () => {
@@ -159,7 +159,9 @@ function onMessageReceived({data}){
     case "message":
       let isOwn = event.user === currentUser;
       console.log(event)
-      addContent(`${event.user}(${event.timestamp}) : ${event.content}`, "messages", isOwn);
+      if (event.channel === currentChannel){
+        addContent(`${event.user}(${event.timestamp}) : ${event.content}`, "messages", isOwn);
+      }
       //scrollToBottom("messages", "message-container");
       break;
 

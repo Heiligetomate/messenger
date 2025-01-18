@@ -1,5 +1,6 @@
 from typing import Any
 
+import psycopg2.errors
 import pydapper
 from psycopg2.errors import UniqueViolation
 from pydapper.exceptions import NoResultException
@@ -109,3 +110,18 @@ class MessengerRepository:
                 return True
             except NoResultException:
                 return False
+
+    def is_user_joined_in_channel(self, user_name, channel_name) -> bool:
+        is_user_in_channel = self.is_user_in_channel(user_name, channel_name)
+        if is_user_in_channel:
+            return True
+        try:
+            with pydapper.connect(self.connection) as commands:
+                rowcount = commands.execute(
+                    "insert into user_account_in_channel (user_account_fk, channel_fk) "
+                    "values (?1?, ?2?)", param={"1": user_name, "2": channel_name}
+                )
+                return rowcount == 1
+        except psycopg2.errors.ForeignKeyViolation as e:
+            print(e)
+            return False
