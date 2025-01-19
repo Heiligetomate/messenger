@@ -38,7 +38,7 @@ class MessengerRepository:
             try:
                 rowcount = commands.execute(
                     "insert into user_account (user_name, password) values (?1?, ?2?)",
-                    param={"1": password, "2": user_name}
+                    param={"1": user_name, "2": password}
                 )
                 if rowcount == 1:
                     rowcount = commands.execute(

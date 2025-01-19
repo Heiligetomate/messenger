@@ -4,16 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="61d9635b-2543-40f9-a9c4-a395da0d92e3" name="Changes" comment="- fix: bugs">
-      <change afterPath="$PROJECT_DIR$/frontend/src/application/websocketConnector.js" afterDir="false" />
+    <list default="true" id="61d9635b-2543-40f9-a9c4-a395da0d92e3" name="Changes" comment="- refactor">
+      <change afterPath="$PROJECT_DIR$/backend/src/definitions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/definitions.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/cache.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/application/cache.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/channel.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/application/channel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/messenger_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/messenger_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/message.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/application/message.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/messenger/messenger.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/messenger/messenger.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/shared.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/application/shared.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,8 +24,8 @@
         <option value="Dockerfile" />
         <option value="HTML File" />
         <option value="CSS File" />
-        <option value="Python Script" />
         <option value="JavaScript File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -275,7 +273,7 @@
       <workItem from="1737199691546" duration="3786000" />
       <workItem from="1737205769864" duration="156000" />
       <workItem from="1737206025236" duration="19245000" />
-      <workItem from="1737285096667" duration="17128000" />
+      <workItem from="1737285096667" duration="24975000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -421,7 +419,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737296867303</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="- refactor">
+      <option name="closed" value="true" />
+      <created>1737302684349</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1737302684349</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -452,7 +458,8 @@
     <MESSAGE value="- add: more db" />
     <MESSAGE value="- refactor&#10;- add 1/2 message delete" />
     <MESSAGE value="- fix: bugs" />
-    <option name="LAST_COMMIT_MESSAGE" value="- fix: bugs" />
+    <MESSAGE value="- refactor" />
+    <option name="LAST_COMMIT_MESSAGE" value="- refactor" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -487,21 +494,6 @@
           <line>15</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/backend/src/main.py</url>
-          <line>168</line>
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/backend/src/main.py</url>
-          <line>24</line>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/backend/src/main.py</url>
-          <line>97</line>
-          <option name="timeStamp" value="33" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
@@ -511,7 +503,7 @@
     <SUITE FILE_PATH="coverage/messenger$tcp_client.coverage" NAME="tcp_client Coverage Results" MODIFIED="1727972411437" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/messenger$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1731681166113" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/prototype" />
     <SUITE FILE_PATH="coverage/messenger$tcp_cient.coverage" NAME="tcp_client Coverage Results" MODIFIED="1727892160280" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/messenger$main.coverage" NAME="main Coverage Results" MODIFIED="1737300647785" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/src" />
+    <SUITE FILE_PATH="coverage/messenger$main.coverage" NAME="main Coverage Results" MODIFIED="1737310424632" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/src" />
     <SUITE FILE_PATH="coverage/messenger$tcp_server_side.coverage" NAME="tcp_server_side Coverage Results" MODIFIED="1728313273271" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/messenger$call_example.coverage" NAME="call_example Coverage Results" MODIFIED="1736526844884" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/src" />
     <SUITE FILE_PATH="coverage/messenger$ggggg.coverage" NAME="ggggg Coverage Results" MODIFIED="1736525892473" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/src" />

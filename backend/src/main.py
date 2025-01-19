@@ -11,60 +11,61 @@ from client import Client
 from channel import Channel
 from messenger_repository import MessengerRepository
 from messagedto import MessageDto
+import definitions as df
 
 
 cnx = MessengerRepository()
 
 
 def users_event() -> str:
-    return json.dumps({"type": "users", "users": len(users())})
+    return json.dumps({"type": "users", "users": len(users())}) #AB IN DIE TONNE
 
 
 def login_event(success: bool, user_name="") -> str:
     if success:
-        return json.dumps({"type": "login", "user": user_name, "success": True})
-    return json.dumps({"type": "login", "success": "false"})
+        return json.dumps({"type": df.SEND_USER_LOGIN_RESULT, "user": user_name, "success": True})
+    return json.dumps({"type": df.SEND_USER_LOGIN_RESULT, "success": "false"})
 
 
 def login_failed_event() -> str:
-    return json.dumps({"type": "login", "success": False})
+    return json.dumps({"type": df.SEND_USER_LOGIN_RESULT, "success": False})
 
 
-def registration_event(user_name, success) -> str:
-    return json.dumps({"type": "registration", "user": user_name, "success": success})
+def registration_event(is_success) -> str:
+    return json.dumps({"type": df.SEND_USER_REGISTRATION_RESULT, "is_success": is_success})
 
 
 def messages_event(msg: MessageDto) -> str:
     json_message = jsonpickle.encode(msg)
-    return json.dumps({"type": "message", "payload": json_message})
+    return json.dumps({"type": df.SEND_CHAT_MESSAGE, "payload": json_message})
 
 
 def init_event(messages: list[MessageDto], channel_names: list[str]) -> str:
     messages = jsonpickle.encode(messages)
-    return json.dumps({"type": "init", "messages": messages, "channelNames": channel_names})
+    return json.dumps({"type": df.SEND_INIT, "messages": messages, "channelNames": channel_names})
 
 
 def channel_messages_event(messages: list[MessageDto]) -> str:
     json_string = jsonpickle.encode(messages)
-    return json.dumps({"type": "channel_messages", "messages": json_string})
+    return json.dumps({"type": df.SEND_CHANNEL_MESSAGES, "messages": json_string})
 
 
 def new_channel_event(success, channel_name=None, fail_message="") -> str:
     if success:
-        return json.dumps({"type": "new_channel", "success": True, "channelName": channel_name})
+        return json.dumps({"type": df.SEND_CHANNEL_CREATED_RESULT, "success": True, "channelName": channel_name})
     else:
-        return json.dumps({"type": "new_channel", "success": False, "failMessage": fail_message})
+        return json.dumps({"type": df.SEND_CHANNEL_CREATED_RESULT, "success": False, "failMessage": fail_message})
 
 
 def join_channel_event(success, channel_name=None, fail_message="") -> str:
     if success:
-        return json.dumps({"type": "join_new_channel", "success": True, "channelName": channel_name})
+        return json.dumps({"type": df.SEND_USER_JOIN_CHANNEL_RESULT, "success": True, "channelName": channel_name})
     else:
-        return json.dumps({"type": "join_new_channel", "success": False, "failMessage": fail_message})
+        return json.dumps({"type": df.SEND_USER_JOIN_CHANNEL_RESULT, "success": False, "failMessage": fail_message})
 
 
 def delete_message_event(success, message_id):
-    return json.dumps({"type": "delete_message", "success": success, "message_id": message_id})
+    return json.dumps({"type": df.SEND_MESSAGE_DELETE_RESULT, "success": success, "message_id": message_id})
 
 
 def find_channels(user_channels) -> list[Channel]:
@@ -85,8 +86,8 @@ def find_channel(channel_name) -> Channel:
 def registration(event, websocket) -> None:
     user_name = event["user"]
     password = event["password"]
-    registration_success = cnx.is_new_user_created(user_name, password)
-    broadcast([websocket], registration_event(user_name, registration_success))
+    is_success = cnx.is_new_user_created(user_name, password)
+    broadcast([websocket], registration_event(is_success))
 
 
 def login(event, websocket) -> None:
@@ -241,34 +242,31 @@ async def on_message_receive(websocket: ServerConnection) -> None:
                 print(f'client added: {websocket.id}')
             event = json.loads(msg)
 
-            if event["action"] == "connect":
+            if event["action"] == df.ON_CONNECT:
                 print("new client connected :-)")
-                #data = json.dumps({"type": "login", "success": True})
-                #broadcast([websocket], data)
 
-            elif event["action"] == "register":
+            elif event["action"] == df.ON_USER_REGISTER:
                 registration(event, websocket)
 
-            elif event["action"] == "login":
-                print("login")
+            elif event["action"] == df.ON_USER_LOGIN:
                 login(event, websocket)
 
-            elif event["action"] == "message":
+            elif event["action"] == df.ON_CHAT_MESSAGE_RECEIVED:
                 message(event)
 
-            elif event["action"] == "init":
+            elif event["action"] == df.ON_INIT_REQUEST_RECEIVED:
                 init(event, websocket)
 
-            elif event["action"] == "select-channel":
+            elif event["action"] == df.ON_CURRENT_CHANNEL_CHANGED:
                 join_channel(event, websocket)
 
-            elif event["action"] == "new-channel":
+            elif event["action"] == df.ON_CHANNEL_CREATED:
                 new_channel(event, websocket)
 
-            elif event["action"] == "join-new-channel":
+            elif event["action"] == df.ON_CHANNEL_JOINED:
                 join_new_channel(event, websocket)
 
-            elif event["action"] == "delete-message":
+            elif event["action"] == df.DELETE_MESSAGE:
                 delete_message(event, websocket)
 
             else:
