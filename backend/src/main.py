@@ -23,7 +23,7 @@ def users_event() -> str:
 def login_event(success: bool, user_name="") -> str:
     if success:
         return json.dumps({"type": "login", "user": user_name, "success": True})
-    return json.dumps({"type": "login", "success": False})
+    return json.dumps({"type": "login", "success": "false"})
 
 
 def login_failed_event() -> str:
@@ -92,11 +92,12 @@ def registration(event, websocket) -> None:
 def login(event, websocket) -> None:
     user_name = event["user"]
     password = event["password"]
-
+    print(f'login event send to ws {websocket.id}')
     is_found, user = cnx.is_user_found(user_name)
     if is_found and password == user.password:
         broadcast([websocket], login_event(True, user_name=user_name))
     else:
+        print("Invalid credentials or username not found")
         broadcast([websocket], login_event(False))
 
 
@@ -234,15 +235,22 @@ async def on_message_receive(websocket: ServerConnection) -> None:
         async for msg in websocket:
             if websocket.id in CLIENTS:
                 CLIENTS[websocket.id].websocket = websocket
+                print(f'client updated: {websocket.id}')
             else:
                 CLIENTS[websocket.id] = Client("", websocket)
-                print("created new client")
+                print(f'client added: {websocket.id}')
             event = json.loads(msg)
 
-            if event["action"] == "register":
+            if event["action"] == "connect":
+                print("new client connected :-)")
+                #data = json.dumps({"type": "login", "success": True})
+                #broadcast([websocket], data)
+
+            elif event["action"] == "register":
                 registration(event, websocket)
 
             elif event["action"] == "login":
+                print("login")
                 login(event, websocket)
 
             elif event["action"] == "message":
@@ -266,12 +274,15 @@ async def on_message_receive(websocket: ServerConnection) -> None:
             else:
                 logging.error("unsupported event: %s", event)
 
+    except Exception as e:
+        print(e)
+
     finally:
         try:
             del CLIENTS[websocket.id]
         except KeyError as e:
             print(f"ERROR: {e}")
-        print(f"after {len(users())}")
+        # print(f"after {len(users())}")
 
 
 async def main():

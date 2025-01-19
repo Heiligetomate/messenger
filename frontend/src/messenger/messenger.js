@@ -1,8 +1,102 @@
-import { getFromStorage } from "../shared.js";
-import { Cache } from "../cache.js"
+import { getFromStorage } from "../application/shared.js";
+import { Cache } from "../application/cache.js"
+import {WebsocketConnector} from "../application/websocketConnector.js";
 
 
 let cache = null;
+let wsCnx = new WebsocketConnector();
+let ws = WebsocketConnector.websocket();
+ws.onmessage = (e) => { onMessageReceived(e); }
+
+ws.onopen = function() {
+  let currentUser = getFromStorage(true)
+  changeUserDisplay(currentUser);
+  console.log(currentUser)
+  cache = new Cache(currentUser);
+  ws.send(JSON.stringify({ action: "init", user: currentUser }));
+}
+
+document.querySelector("#confirm-send").addEventListener("click", () => {
+  let message = document.getElementById("send-message").value
+  let msg = { action: "message", content: message, user: cache.username, channel: cache.currentChannel};
+  if (cache.username.trim() !== "" && message !== ""){
+    ws.send(JSON.stringify(msg));
+    document.getElementById("send-message").value = "";
+  console.log(cache.currentChannel)
+}});
+
+document.querySelector('#send-message').addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') {
+    let content = document.getElementById("send-message").value;
+    let msg = { action: "message", content: content, user: cache.username, channel: cache.currentChannel };
+    if (cache.username.trim() !== "" && content !== "") {
+      ws.send(JSON.stringify(msg));
+      document.getElementById("send-message").value = "";
+    }
+  }
+  console.log(cache.currentChannel)
+});
+
+document.querySelector("#new-channel").addEventListener("click", () => {
+  hideAndDisplay(["messenger"], "channel")
+});
+
+document.querySelector("#go-back").addEventListener("click", () => {
+  hideAndDisplay(["channel", "join-channel"], "messenger")
+});
+
+document.querySelector("#confirm-channel").addEventListener("click", () => {
+  let channelName = document.getElementById("channel-name").value;
+  let channelPassword = document.getElementById("channel-password").value;
+  let isPublic =  document.querySelector('input[name="is-public"]:checked').value === "1";
+  ws.send(JSON.stringify( {action: "new-channel", channelName: channelName, channelPassword:channelPassword, isPublic: isPublic, user: cache.username} ))
+});
+
+document.querySelector("#channel-select").addEventListener('change', () => {
+  deleteMessages("messages")
+  let currentChannel = document.getElementById("channel-select").value;
+  cache.switchChannel(currentChannel);
+  if (cache.isUserInChannel(cache.currentChannel)){
+    ws.send(JSON.stringify( {action: "select-channel", currentChannel: cache.currentChannel} ));
+  }
+  else{
+    window.alert("NICE TRY!")
+  }
+});
+
+document.querySelector("#public-channel").addEventListener("click", () => {
+  document.getElementById("channel-password").style.display = "None";
+  document.getElementById("channel-password-label").style.display = "None";
+});
+
+document.querySelector("#private-channel").addEventListener("click", () => {
+  document.getElementById("channel-password").style.display = "Block";
+  document.getElementById("channel-password-label").style.display = "Block";
+});
+
+document.querySelector("#join-new-channel").addEventListener("click", () => {
+  hideAndDisplay(["messenger", "channel"], "join-channel");
+});
+
+document.querySelector("#join-channel-go-back").addEventListener("click", () => {
+  hideAndDisplay(["channel", "join-channel"], "messenger");
+});
+
+document.querySelector("#confirm-join-channel").addEventListener("click", () => {
+  let channelName = document.getElementById("join-channel-name").value;
+  let channelPassword = document.getElementById("join-channel-password").value;
+  ws.send(JSON.stringify({ action: "join-new-channel", channelName: channelName, channelPassword: channelPassword, user: cache.username } ));
+});
+
+
+
+
+function instantiateMultipleMessages(messages){
+  cache.initMessages(messages)
+  cache.getMessages().forEach((m, _) => {
+    addMessageElementToDOM(m, "messages", ws)
+  });
+}
 
 
 function createParagraph(content){
@@ -81,112 +175,7 @@ function createNewOption(selectId, optionValue){
   select.add(option, select.options[-1]);
 }
 
-let dmStatus = false;
-
-window.addEventListener("load", () => {
-   let url = window.location.hostname === "localhost"
-       ? `http://localhost:6789`
-       : `wss://api.${window.location.hostname}`;
-  console.log("WebSocket URL:", url);
-  let websocket;
-  try{
-    websocket = new WebSocket(url);
-  } catch (e){
-    console.log(e);
-  }
-  let currentUser = getFromStorage(true)
-  changeUserDisplay(currentUser);
-  console.log(currentUser)
-  cache = new Cache(currentUser);
-  websocket.onopen = () => websocket.send(JSON.stringify({ action: "init", user: currentUser }));
-
-
-
-document.querySelector("#confirm-send").addEventListener("click", () => {
-  let message = document.getElementById("send-message").value
-  let msg = { action: "message", content: message, user: currentUser, channel: cache.currentChannel};
-  if (currentUser.trim() !== "" && message !== ""){
-    websocket.send(JSON.stringify(msg));
-    document.getElementById("send-message").value = "";
-  console.log(cache.currentChannel)
-}
-});
-
-document.querySelector('#send-message').addEventListener('keypress', function (e) {
-  if (e.key === 'Enter') {
-    let content = document.getElementById("send-message").value;
-    let msg = { action: "message", content: content, user: currentUser, channel: cache.currentChannel };
-    if (currentUser.trim() !== "" && content !== "") {
-      websocket.send(JSON.stringify(msg));
-      document.getElementById("send-message").value = "";
-    }
-  }
-  console.log(cache.currentChannel)
-});
-
-document.querySelector("#new-channel").addEventListener("click", () => {
-  hideAndDisplay(["messenger"], "channel")
-});
-
-document.querySelector("#go-back").addEventListener("click", () => {
-  hideAndDisplay(["channel", "join-channel"], "messenger")
-});
-
-document.querySelector("#confirm-channel").addEventListener("click", () => {
-  let channelName = document.getElementById("channel-name").value;
-  let channelPassword = document.getElementById("channel-password").value;
-  let isPublic =  document.querySelector('input[name="is-public"]:checked').value === "1";
-  websocket.send(JSON.stringify( {action: "new-channel", channelName: channelName, channelPassword:channelPassword, isPublic: isPublic, user: currentUser} ))
-});
-
-document.querySelector("#channel-select").addEventListener('change', () => {
-  deleteMessages("messages")
-  let currentChannel = document.getElementById("channel-select").value;
-  cache.switchChannel(currentChannel);
-  if (cache.isUserInChannel(cache.currentChannel)){
-    websocket.send(JSON.stringify( {action: "select-channel", currentChannel: cache.currentChannel} ));
-  }
-  else{
-    window.alert("NICE TRY!")
-  }
-});
-
-document.querySelector("#public-channel").addEventListener("click", () => {
-  document.getElementById("channel-password").style.display = "None";
-  document.getElementById("channel-password-label").style.display = "None";
-});
-
-document.querySelector("#private-channel").addEventListener("click", () => {
-  document.getElementById("channel-password").style.display = "Block";
-  document.getElementById("channel-password-label").style.display = "Block";
-});
-
-document.querySelector("#join-new-channel").addEventListener("click", () => {
-  hideAndDisplay(["messenger", "channel"], "join-channel");
-});
-
-document.querySelector("#join-channel-go-back").addEventListener("click", () => {
-  hideAndDisplay(["channel", "join-channel"], "messenger");
-});
-
-document.querySelector("#confirm-join-channel").addEventListener("click", () => {
-  let channelName = document.getElementById("join-channel-name").value;
-  let channelPassword = document.getElementById("join-channel-password").value;
-  websocket.send(JSON.stringify({ action: "join-new-channel", channelName: channelName, channelPassword: channelPassword, user: currentUser } ));
-});
-
-
-websocket.onmessage = onMessageReceived;
-
-
-function instantiateMultipleMessages(messages){
-  cache.initMessages(messages)
-  cache.getMessages().forEach((m, _) => {
-    addMessageElementToDOM(m, "messages", websocket)
-  });
-}
-
-function onMessageReceived({data}){
+function onMessageReceived({data}) {
   const event = JSON.parse(data);
   console.log(event.type)
   switch (event.type) {
@@ -201,10 +190,10 @@ function onMessageReceived({data}){
 
       let msg = JSON.parse(event.payload);
       let transformedMessage = cache.addMessage(msg)
-      if (transformedMessage.channel_id === cache.currentChannel){
+      if (transformedMessage.channel_id === cache.currentChannel) {
 
         console.log("message after parse:" + transformedMessage)
-        addMessageElementToDOM(transformedMessage, "messages", websocket)
+        addMessageElementToDOM(transformedMessage, "messages", ws)
       }
       //scrollToBottom("messages", "message-container");
       break;
@@ -229,12 +218,11 @@ function onMessageReceived({data}){
       break;
 
     case "new_channel":
-      if (event.success === true){
+      if (event.success === true) {
         createNewOption("channel-select", event.channelName)
         hideAndDisplay(["channel", "join-channel"], "messenger")
         cache.addChannel(event.channelName)
-      }
-      else{
+      } else {
         window.alert(event.failMessage)
       }
       break;
@@ -244,8 +232,7 @@ function onMessageReceived({data}){
         createNewOption("channel-select", event.channelName)
         hideAndDisplay(["channel", "join-channel"], "messenger")
         cache.addChannel(event.channelName)
-      }
-      else{
+      } else {
         window.alert(event.failMessage)
       }
       break;
@@ -255,14 +242,13 @@ function onMessageReceived({data}){
         cache.delete_message_by_id(event.message_id);
         document.getElementById("messages").innerHTML = ""
         console.log(cache.messages.length)
-      for (let i = 0; i < cache.messages.length; i++) {
-        addMessageElementToDOM(cache.messages[i], "messages", websocket)
+        for (let i = 0; i < cache.messages.length; i++) {
+          addMessageElementToDOM(cache.messages[i], "messages", ws)
+        }
       }
-    }
       break;
 
     default:
       console.error("unsupported event", event);
   }
 }
-});

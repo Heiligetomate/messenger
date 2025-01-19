@@ -1,14 +1,13 @@
 //import { getFromStorage, save } from "shared";
 
-import {save} from "./shared.js";
+import {save} from "./application/shared.js";
+import {WebsocketConnector} from "./application/websocketConnector.js";
 
 const messengerUrl = "/messenger/messenger.html"
-const currentUrl = "index.html";
-
-function goToRoute(target){
-    let path = window.location.pathname;
-    window.location.href = path.replace(currentUrl, target);
-}
+let currentUrl = "index.html";
+let wsCnx = new WebsocketConnector();
+let ws = WebsocketConnector.websocket();
+ws.onmessage = (e) => { onMessageReceived(e); }
 
 
 document.querySelector("#switch-to-login").addEventListener("click", () => {
@@ -21,6 +20,18 @@ document.querySelector("#switch-to-register").addEventListener("click", () => {
     document.getElementById("registerForm").style.display = "block";
 })
 
+
+document.getElementById("confirm-login").addEventListener("click", () => {
+    let message = getUserAndPassword(ws, "login", "login-name", "login-password");
+    ws.send(message);
+});
+
+document.getElementById("confirm-register").addEventListener("click", () => {
+    let message = getUserAndPassword(ws, "register", "register-name", "register-password");
+    ws.send(message);
+});
+
+
 function getUserAndPassword(websocket, action, userId, passwordId){
     let user = document.getElementById(userId).value;
     let password = document.getElementById(passwordId).value;
@@ -28,29 +39,8 @@ function getUserAndPassword(websocket, action, userId, passwordId){
     return JSON.stringify({action: action, user: user, password: password});
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-    let url = window.location.hostname === "localhost"
-        ? `http://localhost:6789`
-        : `wss://api.${window.location.hostname}`;
-    console.log("WebSocket URL:", url);
-    let websocket;
-    try {
-        websocket = new WebSocket(url);
-    } catch (e) {
-        console.log(e);
-    }
-
-document.getElementById("confirm-login").addEventListener("click", () => {
-    websocket.send(getUserAndPassword(websocket, "login", "login-name", "login-password"));
-});
-
-document.getElementById("confirm-register").addEventListener("click", () => {
-   websocket.send(getUserAndPassword(websocket, "register", "register-name", "register-password"));
-});
-
-websocket.onmessage = onMessageReceived;
-
 function onMessageReceived({data}){
+  console.log(data)
   const event = JSON.parse(data);
   switch (event.type) {
 
@@ -60,8 +50,9 @@ function onMessageReceived({data}){
         break;
 
       case "login":
+          console.log(event)
           if (event.success === true){
-              save(1, event.user)
+              save(true, event.user)
               goToRoute(messengerUrl);
           }
           else {
@@ -71,4 +62,9 @@ function onMessageReceived({data}){
     default:
       console.error("unsupported event", event);
   }
-}});
+}
+
+function goToRoute(target){
+    let path = window.location.pathname;
+    window.location.href = path.replace(currentUrl, target);
+}
