@@ -149,17 +149,16 @@ class MessengerRepository:
             except NoResultException:
                 return False, None
 
-    def is_new_message_created(self, sender, content, chn=None, dm=None) -> (MessageDto, bool):
+    def is_new_message_created(self, sender, content, chn=None, dm=None) -> (bool, MessageDto | None):
         with pydapper.connect(self.connection) as commands:
-            message_id = commands.query_single(
+            result = commands.query_first(
                 "insert into message (sender_fk, receiver_fk, channel_name_fk, content) "
                 "values (?1?, ?2?, ?3?, ?4?) RETURNING id;", param={"1": sender, "2": dm, "3": chn, "4": content}
             )
-        if message_id is None:
-            new_message = self.is_message_found(message_id)
-            return new_message, new_message is not None
-        return None, False
-
+            message_id = result['id']
+        if message_id is not None:
+            return self.is_message_found(message_id)
+        return False, None
 
     def is_message_deleted(self, message_id) -> bool:
         with pydapper.connect(self.connection) as commands:
@@ -167,7 +166,6 @@ class MessengerRepository:
                 "delete from message where id = ?1?", param={"1":  message_id}
             )
             return row_count == 1
-
 
     def is_user_in_channel(self, user_name, channel_name) -> bool:
         with pydapper.connect(self.connection) as commands:
@@ -192,3 +190,12 @@ class MessengerRepository:
         except psycopg2.errors.ForeignKeyViolation as e:
             print(e)
             return False
+
+    def is_message_deleted_by_id(self, message_id) -> bool:
+        with pydapper.connect(self.connection) as commands:
+            try:
+                commands.execute("delete from message where id=?1? ", param={"1": message_id})
+                return True
+            except Exception as e:
+                print(e)
+                return False

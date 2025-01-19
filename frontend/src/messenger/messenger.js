@@ -11,11 +11,12 @@ function createParagraph(content){
     return p;
 }
 
-function onDeleteMessageButtonClicked(messageId){
+function onDeleteMessageButtonClicked(messageId, websocket){
   console.log("delete message with id clicked " + messageId)
+  websocket.send(JSON.stringify({action: "delete-message", messageId: messageId, channel: cache.currentChannel}))
 }
 
-function addMessageElementToDOM(message, elementId){
+function addMessageElementToDOM(message, elementId, websocket){
    let elem = document.getElementById(elementId);
    let isOwner = message.isOwner;
    let p = createParagraph(message.concatenatedContent)
@@ -27,9 +28,10 @@ function addMessageElementToDOM(message, elementId){
      let containerCss= "message-container";
      let buttonCss = "message-delete-button"
      let button = document.createElement("button");
-     button.onclick = function(){ onDeleteMessageButtonClicked(message.id) }
+     button.onclick = function () {
+       onDeleteMessageButtonClicked(message.id, websocket) }
      button.classList.add(buttonCss);
-     button.append("löschen");
+     button.append("delete");
      container.classList.add(containerCss);
      container.append(button);
      container.append(p);
@@ -41,6 +43,7 @@ function addMessageElementToDOM(message, elementId){
 
 function deleteMessages(elementId) {
     document.getElementById(elementId).innerHTML = ""
+    cache.deleteAllMessagesInCurrentChannel();
 }
 
 function changeUserDisplay(user){
@@ -78,7 +81,6 @@ function createNewOption(selectId, optionValue){
   select.add(option, select.options[-1]);
 }
 
-let currentChannel = "global";
 let dmStatus = false;
 
 window.addEventListener("load", () => {
@@ -102,25 +104,24 @@ window.addEventListener("load", () => {
 
 document.querySelector("#confirm-send").addEventListener("click", () => {
   let message = document.getElementById("send-message").value
-  let msg = { action: "message", content: message, user: currentUser, channel: currentChannel};
+  let msg = { action: "message", content: message, user: currentUser, channel: cache.currentChannel};
   if (currentUser.trim() !== "" && message !== ""){
     websocket.send(JSON.stringify(msg));
     document.getElementById("send-message").value = "";
-  console.log(currentChannel)
+  console.log(cache.currentChannel)
 }
 });
 
 document.querySelector('#send-message').addEventListener('keypress', function (e) {
   if (e.key === 'Enter') {
     let content = document.getElementById("send-message").value;
-    let msg = { action: "message", content: content, user: currentUser, channel: currentChannel };
-    console.log(msg);
+    let msg = { action: "message", content: content, user: currentUser, channel: cache.currentChannel };
     if (currentUser.trim() !== "" && content !== "") {
       websocket.send(JSON.stringify(msg));
       document.getElementById("send-message").value = "";
     }
   }
-  console.log(currentChannel)
+  console.log(cache.currentChannel)
 });
 
 document.querySelector("#new-channel").addEventListener("click", () => {
@@ -135,13 +136,19 @@ document.querySelector("#confirm-channel").addEventListener("click", () => {
   let channelName = document.getElementById("channel-name").value;
   let channelPassword = document.getElementById("channel-password").value;
   let isPublic =  document.querySelector('input[name="is-public"]:checked').value === "1";
-  console.log(channelName, channelPassword, isPublic)
   websocket.send(JSON.stringify( {action: "new-channel", channelName: channelName, channelPassword:channelPassword, isPublic: isPublic, user: currentUser} ))
 });
 
 document.querySelector("#channel-select").addEventListener('change', () => {
-  currentChannel = document.getElementById("channel-select").value;
-  websocket.send(JSON.stringify( {action: "select-channel", channel: currentChannel, currentChannel: currentChannel} )); //joa wa Keule guck mal an und vergiss nicht
+  deleteMessages("messages")
+  let currentChannel = document.getElementById("channel-select").value;
+  cache.switchChannel(currentChannel);
+  if (cache.isUserInChannel(cache.currentChannel)){
+    websocket.send(JSON.stringify( {action: "select-channel", currentChannel: cache.currentChannel} ));
+  }
+  else{
+    window.alert("NICE TRY!")
+  }
 });
 
 document.querySelector("#public-channel").addEventListener("click", () => {
@@ -175,8 +182,7 @@ websocket.onmessage = onMessageReceived;
 function instantiateMultipleMessages(messages){
   cache.initMessages(messages)
   cache.getMessages().forEach((m, _) => {
-    console.log(m)
-    addMessageElementToDOM(m, "messages")
+    addMessageElementToDOM(m, "messages", websocket)
   });
 }
 
@@ -191,42 +197,42 @@ function onMessageReceived({data}){
       break;
 
     case "message":
-      //let isOwn = event.user === currentUser;
-      console.log(event)
-      if (event.channel === currentChannel){
-        //addMessageElementToDOM(`${event.user}(${event.timestamp}) : ${event.content}`, "messages", isOwn);
-        let message = JSON.parse(event.message);
-        addMessageElementToDOM(message, "messages")
+      console.log("message received in channel: " + event.payload)
+
+      let msg = JSON.parse(event.payload);
+      let transformedMessage = cache.addMessage(msg)
+      if (transformedMessage.channel_id === cache.currentChannel){
+
+        console.log("message after parse:" + transformedMessage)
+        addMessageElementToDOM(transformedMessage, "messages", websocket)
       }
       //scrollToBottom("messages", "message-container");
       break;
 
     case "init":
-      console.log(event.channelNames)
       event.channelNames.forEach((item, _) => {
         createNewOption("channel-select", item.channel_fk);
+        cache.addChannel(item.channel_fk)
       });
-      cache.initChannels(event.channelNames);
 
       document.getElementById("messages").innerHTML = "";
-      console.log("init channel messages " + event)
-        console.log(event.messages);
       const messages = JSON.parse(event.messages)
       instantiateMultipleMessages(messages)
       break;
 
     case "channel_messages":
       deleteMessages("messages")
-      const message = JSON.parse(event.message)
-        console.log(message);
-        console.log([message]);
-      instantiateMultipleMessages([message])
+      console.log("channel messages (raw): " + event.messages)
+      const message = JSON.parse(event.messages)
+
+      instantiateMultipleMessages(message)
       break;
 
     case "new_channel":
       if (event.success === true){
         createNewOption("channel-select", event.channelName)
         hideAndDisplay(["channel", "join-channel"], "messenger")
+        cache.addChannel(event.channelName)
       }
       else{
         window.alert(event.failMessage)
@@ -237,10 +243,22 @@ function onMessageReceived({data}){
       if (event.success === true) {
         createNewOption("channel-select", event.channelName)
         hideAndDisplay(["channel", "join-channel"], "messenger")
+        cache.addChannel(event.channelName)
       }
       else{
         window.alert(event.failMessage)
       }
+      break;
+
+    case "delete_message":
+      if (event.success) {
+        cache.delete_message_by_id(event.message_id);
+        document.getElementById("messages").innerHTML = ""
+        console.log(cache.messages.length)
+      for (let i = 0; i < cache.messages.length; i++) {
+        addMessageElementToDOM(cache.messages[i], "messages", websocket)
+      }
+    }
       break;
 
     default:
