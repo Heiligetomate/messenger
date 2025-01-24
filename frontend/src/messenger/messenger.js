@@ -5,8 +5,10 @@ import {EventDefinitions} from "../definitions.js";
 
 
 let cache = null;
-let ws = WebsocketConnector.websocket();
+let ws = new WebsocketConnector().websocket();
 ws.onmessage = (e) => { onMessageReceived(e); }
+ws.onclose = (e) => { window.location.replace('/'); }
+
 
 ws.onopen = function() {
   let currentUser = getFromStorage(true)

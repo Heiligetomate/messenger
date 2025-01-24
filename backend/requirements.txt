@@ -1,3 +1,0 @@
-websockets~=13.1
-keyboard~=0.13.5
-jsonpickle~=3.3.0

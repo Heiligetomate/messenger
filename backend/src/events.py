@@ -6,7 +6,7 @@ from messagedto import MessageDto
 
 def send_login_result(success: bool, user_name="") -> str:
     if success:
-        return json.dumps({"type": df.SEND_USER_LOGIN_RESULT, "user": user_name, "success": True})
+        return json.dumps({"type": df.SEND_USER_LOGIN_RESULT, "success": True, "user": user_name})
     return json.dumps({"type": df.SEND_USER_LOGIN_RESULT, "success": False})
 
 

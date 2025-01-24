@@ -5,19 +5,21 @@ import {WebsocketConnector} from "./application/websocketConnector.js";
 import {EventDefinitions} from "./definitions.js";
 
 const messengerUrl = "/messenger/messenger.html"
-let currentUrl = "index.html";
-let ws = WebsocketConnector.websocket();
+
+let ws = new WebsocketConnector().websocket();
 ws.onmessage = (e) => { onMessageReceived(e); }
+console.log(ws);
 
 
-document.querySelector("#switch-to-login").addEventListener("click", () => {
-    document.getElementById("loginForm").style.display = "block";
+
+document.getElementById("switch-to-login").addEventListener("click", () => {
+    document.getElementById("loginForm").style.display = "flex";
     document.getElementById("registerForm").style.display = "none";
 })
 
-document.querySelector("#switch-to-register").addEventListener("click", () => {
+document.getElementById("switch-to-register").addEventListener("click", () => {
     document.getElementById("loginForm").style.display = "none";
-    document.getElementById("registerForm").style.display = "block";
+    document.getElementById("registerForm").style.display = "flex";
 })
 
 
@@ -35,7 +37,7 @@ document.getElementById("confirm-register").addEventListener("click", () => {
 function getUserAndPassword(websocket, action, userId, passwordId){
     let user = document.getElementById(userId).value;
     let password = document.getElementById(passwordId).value;
-    console.log(user, password);
+    //console.log(user, password);
     return JSON.stringify({action: action, user: user, password: password});
 }
 
@@ -57,7 +59,8 @@ function onMessageReceived({data}){
         console.log(event)
         if (event.success === true){
             save(true, event.user)
-            goToRoute(messengerUrl);
+            window.location.replace(messengerUrl);
+
         }
         else {
             window.alert("Wrong username or password")
@@ -66,9 +69,4 @@ function onMessageReceived({data}){
     default:
       console.error("unsupported event", event);
   }
-}
-
-function goToRoute(target){
-    let path = window.location.pathname;
-    window.location.href = path.replace(currentUrl, target);
 }

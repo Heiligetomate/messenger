@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login/Register - Dark Mode</title>
+    <base href="/" target="_blank">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="site.css" rel="stylesheet">
     <link href="index.css" rel="stylesheet">
 </head>
@@ -11,28 +13,24 @@
 
     <div class="container">
         <!-- Login Form -->
-        <div id="loginForm">
+        <div id="loginForm" style="display:flex; flex-direction: column;">
             <h2>Login</h2>
-            <form >
-                <input type="text" id="login-name" placeholder="Username" required>
-                <input type="password" id="login-password" placeholder="Password" required>
-                <input type="submit" value="Login" id="confirm-login">
-            </form>
+            <input type="text" id="login-name" placeholder="Username" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <button value="Login" id="confirm-login">login</button>
             <div class="switch-link">
-                <p>Don't have an account? <a href="#registerForm" id="switch-to-register">Register</a></p>
+                <p>Don't have an account? <a id="switch-to-register" style="cursor: pointer;">Register</a></p>
             </div>
         </div>
 
         <!-- Register Form -->
-        <div id="registerForm" style="display: none;">
+        <div id="registerForm" style="display: none; flex-direction: column;">
             <h2>Register</h2>
-        <form >
                 <input type="text" id="register-name" placeholder="Username" required>
                 <input type="password" id="register-password" placeholder="Password" required>
                 <input type="submit" id="confirm-register" value="Register">
-            </form>
             <div class="switch-link">
-                <p>Already have an account? <a href="#loginForm" id="switch-to-login">Login</a></p>
+                <p>Already have an account? <a id="switch-to-login" style="cursor: pointer;">Login</a></p>
             </div>
         </div>
     </div>

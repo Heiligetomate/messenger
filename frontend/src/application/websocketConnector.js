@@ -1,33 +1,30 @@
 export class WebsocketConnector {
 
-    static #ws = null;
-    static websocket(){
-        if (WebsocketConnector.#ws == null){
-            let url = window.location.hostname === "localhost"
+    #ws = null;
+    websocket(){
+        if (this.#ws == null) {
+            let url = window.location.hostname === "localhost" || "127.0.0.1"
                 ? `http://localhost:6789`
                 : `wss://api.${window.location.hostname}`;
-            WebsocketConnector.#ws = new WebSocket(url);
+            this.#ws = new WebSocket(url);
+            this.connect();
         }
-        return WebsocketConnector.#ws;
+        return this.#ws;
     }
 
     connect() {
-        WebsocketConnector.websocket.onopen = function() {
+        this.websocket().onopen = () => {
             console.log("Server connection established succesfully")
-          WebsocketConnector.websocket.send(JSON.stringify({ action: "connect" }));
+          this.websocket().send(JSON.stringify({ action: "connect" }));
         };
 
-        WebsocketConnector.websocket.onclose = function(e) {
-          console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
-          window.alert("Connection to server lost. Please reload to try again.")
-          setTimeout(function() {
-            //connect();
-          }, 1000);
+        this.websocket().onclose = (e) => {
+          window.alert("Connection to server lost. Please reload to try again.");         
         };
 
-        WebsocketConnector.websocket.onerror = function(err) {
+        this.websocket().onerror = (err) =>  {
           console.error('Socket encountered error: ', err.message, 'Closing socket');
-          this.ws.close();
+          this.websocket().close();
         };
     }
 }

@@ -28,6 +28,7 @@ def login(event, websocket) -> None:
     is_found, user = cnx.is_user_found(user_name)
     if is_found and password == user.password:
         broadcast([websocket], events.send_login_result(True, user_name=user_name))
+        print(events.send_login_result(True, user_name=user_name))
     else:
         print("Invalid credentials or username not found")
         broadcast([websocket], events.send_login_result(False))
