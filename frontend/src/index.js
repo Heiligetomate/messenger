@@ -1,103 +1,72 @@
-let currentUser = "";
+//import { getFromStorage, save } from "shared";
+
+import {save} from "./application/shared.js";
+import {WebsocketConnector} from "./application/websocketConnector.js";
+import {EventDefinitions} from "./definitions.js";
+
+const messengerUrl = "/messenger/messenger.html"
+
+let ws = new WebsocketConnector().websocket();
+ws.onmessage = (e) => { onMessageReceived(e); }
+console.log(ws);
 
 
-  function createParagraph(content){
-    	let p = document.createElement("p");
-    	p.append(content);
-        return p;
-    }
 
-  function addContent(content, elementId, isOwnMessage){
-        let elem = document.getElementById(elementId);
-        let p = createParagraph(content)
-        let cssClass = isOwnMessage ? "p-left" : "p-right";
-        p.classList.add(cssClass);
-        elem.append(p)
-  }
+document.getElementById("switch-to-login").addEventListener("click", () => {
+    document.getElementById("loginForm").style.display = "flex";
+    document.getElementById("registerForm").style.display = "none";
+})
 
-  function getValueAndDeleteContent(elementId){
-    let elementValue = document.getElementById(elementId).value;
-    document.getElementById(elementId).value = "";
-    return elementValue;
-  }
+document.getElementById("switch-to-register").addEventListener("click", () => {
+    document.getElementById("loginForm").style.display = "none";
+    document.getElementById("registerForm").style.display = "flex";
+})
 
 
-window.addEventListener("DOMContentLoaded", () => {
-   let url = window.location.hostname === "localhost"
-       ? `http://localhost:6789`
-       : `wss://api.${window.location.hostname}`;
-  console.log("WebSocket URL:", url);
-  let websocket;
-  try{
-    websocket = new WebSocket(url);
-  } catch (e){
-    console.log(e);
-  }
-
-document.querySelector("#confirm-send").addEventListener("click", () => {
-  let message = document.getElementById("send-message").value
-  let msg = { action: "message", content: message, user: currentUser };
-  if (currentUser.trim() !== "" && message !== ""){
-    websocket.send(JSON.stringify(msg));
-    document.getElementById("send-message").value = "";
-  }
-
+document.getElementById("confirm-login").addEventListener("click", () => {
+    let message = getUserAndPassword(ws, EventDefinitions.sendUserLoginRequest, "login-name", "login-password");
+    ws.send(message);
 });
 
-document.querySelector("#confirm-login-or-register").addEventListener("click", () => {
-  let usersPassword = getValueAndDeleteContent("password");
-  let userLogin = getValueAndDeleteContent("username");
-  let loginOrRegister = document.getElementById("login-or-register").value
-  if (loginOrRegister === "login"){
-    websocket.send(JSON.stringify({ action: "login", user: userLogin, password: usersPassword }));
-  }
-  else {
-    websocket.send(JSON.stringify({ action: "register", user: userLogin, password: usersPassword }));
-  }
+document.getElementById("confirm-register").addEventListener("click", () => {
+    let message = getUserAndPassword(ws, EventDefinitions.sendUserRegisterRequest, "register-name", "register-password");
+    ws.send(message);
 });
 
-//document.querySelector("#get-old-messages").addEventListener("click", () => {
-//  document.getElementById("messages").innerHTML = "";
-//  websocket.send(JSON.stringify({action: "init"}));
-//  let button = document.getElementById("get-old-messages");
-//  button.setAttribute("disabled", "true");
-//
-//})
 
-  websocket.onmessage = onMessageReceived;
+function getUserAndPassword(websocket, action, userId, passwordId){
+    let user = document.getElementById(userId).value;
+    let password = document.getElementById(passwordId).value;
+    //console.log(user, password);
+    return JSON.stringify({action: action, user: user, password: password});
+}
 
-  function onMessageReceived({data}){
-    const event = JSON.parse(data);
-    switch (event.type) {
-      case "users":
-        const users = `${event.count} user${event.count === 1 ? "" : "s"}`;
-        document.querySelector(".users").textContent = users;
-        break;
-      case "message":
-        let isSelf = event.user === currentUser;
+function onMessageReceived({data}){
+  console.log(data)
+  const event = JSON.parse(data);
+  switch (event.type) {
 
-        addContent(`${event.user}(${event.timestamp}) : ${event.content}`, "messages", isSelf);
-        break;
-      case "init":
-        const jsonArray = JSON.parse(event.messages);
-        jsonArray.forEach((item, _) => {
-          let isOwn = item.user === currentUser;
-          addContent(`${item.user}(${item.timestamp}) : ${item.content}`, "messages", isOwn);
-
-        });
-        break;
-      case "login":
-        if(event.success === true){
-          currentUser = event.user
-          document.getElementById("display-username").innerHTML = "logged in as: " + currentUser;
-          break;
+      case EventDefinitions.onUserRegisterResult:
+        if (event.is_success === true){
+            window.alert("Created new account successfully")
         }
-        window.alert("Wrong login data. Please try again")
+        else {
+            window.alert("Could not create new account")
+        }
         break;
 
+      case EventDefinitions.onUserLoginResult:
+        console.log(event)
+        if (event.success === true){
+            save(true, event.user)
+            window.location.replace(messengerUrl);
 
-      default:
-        console.error("unsupported event", event);
-    }
+        }
+        else {
+            window.alert("Wrong username or password")
+        }
+        break;
+    default:
+      console.error("unsupported event", event);
   }
-});
+}

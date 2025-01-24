@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>WebSocket demo</title>
+        <script src="messenger.js" type="module"></script>
+
+        <link href="messenger.css" rel="stylesheet">
+            <link href="../site.css" rel="stylesheet">
+
+    </head>
+
+    <body style="width: 100vw; padding: 24px; " class="global-bg">
+    <div id="messenger">
+    <div style="max-width: 800px; width: 100%;">
+        <p id="display-username" style="color: white; font-size: 2em">logged in as: </p>
+
+
+        <fieldset class="fieldset">
+            <legend class="legend-messages">messages</legend>
+            <div id=messages class="global-font" style="overflow-y: scroll; max-height: 700px; scrollbar-width: thin; padding: 0.5em">
+            </div>
+        </fieldset>
+
+    </div>
+    <div>
+
+    <div style="min-width: 300px; display: flex; flex-direction: row;
+        justify-content: center; align-items: center; gap: 12px;">
+        <input id="send-message" type="text">
+        <button id="confirm-send" class="global-bg">send</button>
+    </div>
+    <label for="channel-select" id="channel-message"> Channels:
+        <select id="channel-select">
+
+        </select>
+        <button id="join-new-channel">join channel</button>
+        <button id="new-channel">create new channel</button>
+    </label>
+
+    </div>
+
+
+    </div>
+    <div id="channel" style="display: none">
+        <fieldset>
+            <legend class="legend-messages">Create new channel</legend>
+            <div style="display: flex; flex-direction: column">
+                <label for="channel-name">channel name:</label>
+                <input type="text" id="channel-name">
+            </div>
+            <div style="display: flex; flex-direction: column">
+                <label for="channel-password" id="channel-password-label">channel password:</label>
+                <input type="password" id="channel-password">
+            </div>
+            <div style="">
+
+            <div>
+              <input type="radio" id="private-channel" name="is-public" value="0" checked/>
+              <label for="private-channel">Private</label>
+            </div>
+            <div>
+            <input type="radio" id="public-channel" name="is-public" value="1" />
+            <label for="public-channel">Public</label>
+            </div>
+
+
+            </div>
+
+            <button id="confirm-channel">Create channel</button>
+        </fieldset>
+        <button id="go-back">Go back</button>
+    </div>
+
+    <div id="join-channel" style="display: none">
+        <fieldset>
+            <legend class="legend-messages">Join new channel</legend>
+            <div style="display: flex; flex-direction: column">
+                <label for="join-channel-name">channel name:</label>
+                <input type="text" id="join-channel-name">
+            </div>
+            <div style="display: flex; flex-direction: column">
+                <label for="join-channel-password">channel password:</label>
+                <input type="password" id="join-channel-password">
+            </div>
+            <button id="confirm-join-channel">Join channel</button>
+        </fieldset>
+        <button id="join-channel-go-back">Go back</button>
+    </div>
+
+    </body>
+</html>

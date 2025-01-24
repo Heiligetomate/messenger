@@ -1,0 +1,72 @@
+body {
+    font-family: "Courier New", sans-serif;
+    text-align: center;
+}
+
+.buttons {
+    font-size: 4em;
+    display: flex;
+    justify-content: center;
+}
+
+.button-cst, .value {
+    line-height: 1;
+    padding: 2rem;
+    margin: 2rem;
+    border: medium solid;
+    min-height: 1em;
+    min-width: 1em;
+}
+
+.button-cst {
+    cursor: pointer;
+    user-select: none;
+}
+
+.value {
+    min-width: 2em;
+    color: white;
+}
+
+.state {
+    font-size: 2em;
+    color: white;
+}
+
+.name-box {
+    /*margin: 1em;*/
+    font-size: 2em;
+    color: white;
+}
+
+.legend-messages{
+    color: white;
+    font-size: 2em;
+
+}
+
+.p-left {
+    text-align: left;
+}
+
+.p-right {
+    text-align: right;
+}
+
+.global-bg{
+    background: #121212;
+}
+
+.global-font{
+    color: white;
+}
+
+.message-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.message-delete-button {
+    max-height: 36px;
+}

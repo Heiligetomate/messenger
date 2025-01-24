@@ -4,10 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="61d9635b-2543-40f9-a9c4-a395da0d92e3" name="Changes" comment="-add: better login with password">
-      <change beforePath="$PROJECT_DIR$/.idea/messenger.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/messenger.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="61d9635b-2543-40f9-a9c4-a395da0d92e3" name="Changes" comment="- final version">
+      <change afterPath="$PROJECT_DIR$/backend/src/sqlite_init_commands.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dbinit/initsqlite.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dbinit/messenger.sqlite" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/start_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/messenger_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/messenger_repository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbinit/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/dbinit/init.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,10 +24,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Dockerfile" />
         <option value="HTML File" />
         <option value="CSS File" />
         <option value="JavaScript File" />
-        <option value="Dockerfile" />
         <option value="Python Script" />
       </list>
     </option>
@@ -42,45 +49,125 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.tcp_cient.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.tcp_client.executor&quot;: &quot;Run&quot;,
-    &quot;Python.tcp_client_receiver.executor&quot;: &quot;Run&quot;,
-    &quot;Python.tcp_server_side.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;playground&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/heili/PycharmProjects/messenger&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "JavaScript Debug.index.html (1).executor": "Run",
+    "JavaScript Debug.index.html (2).executor": "Run",
+    "JavaScript Debug.index.html.executor": "Run",
+    "Python.call_example.executor": "Run",
+    "Python.data_base_models.executor": "Run",
+    "Python.ggggg.executor": "Run",
+    "Python.main (1).executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.tcp_cient.executor": "Debug",
+    "Python.tcp_client.executor": "Run",
+    "Python.tcp_client_receiver.executor": "Run",
+    "Python.tcp_server_side.executor": "Run",
+    "Python.testing_things.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "bug-fixes",
+    "last_opened_file_path": "C:/Users/heili/PycharmProjects/messenger/dbinit",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql",
+      "sqlite"
+    ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\heili\PycharmProjects\messenger\dbinit" />
+      <recent name="C:\Users\heili\PycharmProjects\messenger\frontend\src" />
+      <recent name="C:\Users\heili\PycharmProjects\messenger\frontend\src\messenger" />
+      <recent name="C:\Users\heili\PycharmProjects\messenger\backend\src" />
       <recent name="C:\Users\heili\PycharmProjects\messenger" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\HannesRoever\PycharmProjects\messenger\exp" />
-      <recent name="C:\Users\HannesRoever\PycharmProjects\messenger\backend\src" />
-      <recent name="C:\Users\HannesRoever\PycharmProjects\messenger\frontend\web" />
-      <recent name="C:\Users\HannesRoever\PycharmProjects\messenger\backend" />
+      <recent name="C:\Users\heili\PycharmProjects\messenger" />
       <recent name="C:\Users\heili\PycharmProjects\messenger\backend" />
+      <recent name="C:\Users\heili\PycharmProjects\messenger\frontend\src\application" />
+      <recent name="C:\Users\heili\PycharmProjects\messenger\frontend\src" />
+      <recent name="C:\Users\HannesRoever\PycharmProjects\messenger\exp" />
     </key>
   </component>
   <component name="RunManager" selected="Python.main">
-    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/messenger/frontend/web/index.html" useBuiltInWebServerPort="true">
+    <configuration name="call_example" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="messenger" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/backend/src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/backend/src/call_example.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="index.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/frontend/src/index.js" working-dir="$PROJECT_DIR$">
+    <configuration name="data_base_models" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="messenger" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/backend/src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/backend/src/data_base_models.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="ggggg" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="messenger" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/backend/src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/backend/src/ggggg.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -106,7 +193,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="tcp_client" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="testing_things" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="messenger" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -115,35 +202,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/backend/src" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="C:\Users\heili\PycharmProjects\messenger\tcp_client.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="tcp_server_side" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="messenger" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="C:\Users\heili\PycharmProjects\messenger\backend\tcp_server_side.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/backend/src/testing_things.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -161,12 +225,19 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.tcp_server_side" />
-        <item itemvalue="JavaScript Debug.index.html" />
-        <item itemvalue="Python.tcp_client" />
-        <item itemvalue="Node.js.index.js" />
+        <item itemvalue="Python.testing_things" />
+        <item itemvalue="Python.call_example" />
+        <item itemvalue="Python.ggggg" />
+        <item itemvalue="Python.data_base_models" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SQLScriptSettings">
+    <option name="matrix">
+      <map>
+        <entry key="POSTGRES.CreateComplete" value="CreateOrReplace=1, CreateIfNotExists=1, Owner=1, Grants=1" />
+      </map>
+    </option>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -190,6 +261,37 @@
       <workItem from="1728236471697" duration="1444000" />
       <workItem from="1728311733921" duration="1760000" />
       <workItem from="1728581223184" duration="5869000" />
+      <workItem from="1730905098295" duration="596000" />
+      <workItem from="1731240613941" duration="1309000" />
+      <workItem from="1731410212967" duration="7101000" />
+      <workItem from="1731600656608" duration="5478000" />
+      <workItem from="1731679450100" duration="2185000" />
+      <workItem from="1731773431699" duration="20000" />
+      <workItem from="1731954951030" duration="80000" />
+      <workItem from="1731955037354" duration="2431000" />
+      <workItem from="1732715026228" duration="2156000" />
+      <workItem from="1735303334708" duration="7762000" />
+      <workItem from="1735387767152" duration="11917000" />
+      <workItem from="1735830194228" duration="3642000" />
+      <workItem from="1735997498637" duration="4487000" />
+      <workItem from="1736093102216" duration="5069000" />
+      <workItem from="1736178225074" duration="5530000" />
+      <workItem from="1736263103310" duration="11898000" />
+      <workItem from="1736522988297" duration="9412000" />
+      <workItem from="1736597842757" duration="10925000" />
+      <workItem from="1736699512313" duration="3513000" />
+      <workItem from="1736863006986" duration="5672000" />
+      <workItem from="1737136942648" duration="5000" />
+      <workItem from="1737199691546" duration="3786000" />
+      <workItem from="1737205769864" duration="156000" />
+      <workItem from="1737206025236" duration="19245000" />
+      <workItem from="1737285096667" duration="25159000" />
+      <workItem from="1737377233384" duration="3128000" />
+      <workItem from="1737633433287" duration="6822000" />
+      <workItem from="1737648092998" duration="15000" />
+      <workItem from="1737653752509" duration="5059000" />
+      <workItem from="1737726721510" duration="3010000" />
+      <workItem from="1737743707301" duration="14916000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -263,7 +365,111 @@
       <option name="project" value="LOCAL" />
       <updated>1728588814600</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="- add: username websocket connection (with dict)">
+      <option name="closed" value="true" />
+      <created>1730639471381</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1730639471381</updated>
+    </task>
+    <task id="LOCAL-00011" summary="- add: channels (a bit)">
+      <option name="closed" value="true" />
+      <created>1731420843367</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1731420843367</updated>
+    </task>
+    <task id="LOCAL-00012" summary="- add: channels (a bit)">
+      <option name="closed" value="true" />
+      <created>1736263577638</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1736263577638</updated>
+    </task>
+    <task id="LOCAL-00013" summary="- add: db">
+      <option name="closed" value="true" />
+      <created>1736527201981</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1736527201981</updated>
+    </task>
+    <task id="LOCAL-00014" summary="- add: db message and user">
+      <option name="closed" value="true" />
+      <created>1736609835803</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1736609835803</updated>
+    </task>
+    <task id="LOCAL-00015" summary="- add: db message and user">
+      <option name="closed" value="true" />
+      <created>1736864529061</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1736864529061</updated>
+    </task>
+    <task id="LOCAL-00016" summary="- add: more db">
+      <option name="closed" value="true" />
+      <created>1737200572667</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1737200572667</updated>
+    </task>
+    <task id="LOCAL-00017" summary="- refactor&#10;- add 1/2 message delete">
+      <option name="closed" value="true" />
+      <created>1737225330436</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1737225330436</updated>
+    </task>
+    <task id="LOCAL-00018" summary="- fix: bugs">
+      <option name="closed" value="true" />
+      <created>1737296867303</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1737296867303</updated>
+    </task>
+    <task id="LOCAL-00019" summary="- refactor">
+      <option name="closed" value="true" />
+      <created>1737302684349</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1737302684349</updated>
+    </task>
+    <task id="LOCAL-00020" summary="- refactor names">
+      <option name="closed" value="true" />
+      <created>1737310505088</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1737310505088</updated>
+    </task>
+    <task id="LOCAL-00021" summary="- final version">
+      <option name="closed" value="true" />
+      <created>1737738209763</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1737738209763</updated>
+    </task>
+    <task id="LOCAL-00022" summary="- final version">
+      <option name="closed" value="true" />
+      <created>1737752258375</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1737752258375</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -287,7 +493,17 @@
     <MESSAGE value="- add gitignore" />
     <MESSAGE value="- add docker service config" />
     <MESSAGE value="-add: better login with password" />
-    <option name="LAST_COMMIT_MESSAGE" value="-add: better login with password" />
+    <MESSAGE value="- add: username websocket connection (with dict)" />
+    <MESSAGE value="- add: channels (a bit)" />
+    <MESSAGE value="- add: db" />
+    <MESSAGE value="- add: db message and user" />
+    <MESSAGE value="- add: more db" />
+    <MESSAGE value="- refactor&#10;- add 1/2 message delete" />
+    <MESSAGE value="- fix: bugs" />
+    <MESSAGE value="- refactor" />
+    <MESSAGE value="- refactor names" />
+    <MESSAGE value="- final version" />
+    <option name="LAST_COMMIT_MESSAGE" value="- final version" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -326,10 +542,15 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/messenger$testing_things.coverage" NAME="testing_things Coverage Results" MODIFIED="1736702930534" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/src" />
     <SUITE FILE_PATH="coverage/messenger$tcp_client_receiver.coverage" NAME="tcp_client_receiver Coverage Results" MODIFIED="1727894114206" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/messenger$tcp_client.coverage" NAME="tcp_client Coverage Results" MODIFIED="1727972411437" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/messenger$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1731681166113" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/prototype" />
     <SUITE FILE_PATH="coverage/messenger$tcp_cient.coverage" NAME="tcp_client Coverage Results" MODIFIED="1727892160280" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/messenger$main.coverage" NAME="main Coverage Results" MODIFIED="1728588762103" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/src" />
+    <SUITE FILE_PATH="coverage/messenger$main.coverage" NAME="main Coverage Results" MODIFIED="1737759090147" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/src" />
     <SUITE FILE_PATH="coverage/messenger$tcp_server_side.coverage" NAME="tcp_server_side Coverage Results" MODIFIED="1728313273271" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/messenger$call_example.coverage" NAME="call_example Coverage Results" MODIFIED="1736526844884" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/src" />
+    <SUITE FILE_PATH="coverage/messenger$ggggg.coverage" NAME="ggggg Coverage Results" MODIFIED="1736525892473" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/src" />
+    <SUITE FILE_PATH="coverage/messenger$data_base_models.coverage" NAME="data_base_models Coverage Results" MODIFIED="1736525314795" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/src" />
   </component>
 </project>
