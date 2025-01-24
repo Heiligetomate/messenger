@@ -2,10 +2,12 @@ from typing import Any
 
 import psycopg2.errors
 import pydapper
+import os
 from psycopg2.errors import UniqueViolation
 from pydapper.exceptions import NoResultException
 from data_base_models import *
 from messagedto import MessageDto
+import sqlite_init_commands as sql_stm
 
 
 def map_to_strings_from_dictionary(values: list[dict[Any]]) -> list[str]:
@@ -17,7 +19,11 @@ def map_to_strings_from_dictionary(values: list[dict[Any]]) -> list[str]:
 
 
 def map_to_dto(src: Message) -> MessageDto:
-    ts = f'{src.time_stamp.strftime("%H:%M")}'
+    try:
+        ts = f'{src.time_stamp.strftime("%H:%M")}'
+    except Exception as e:
+        print(e)
+        ts = src.time_stamp
     return MessageDto(src.content, src.sender_fk, ts, src.id, src.channel_id)
 
 
@@ -29,9 +35,56 @@ def map_to_dtos(messages: list[Message]) -> list[MessageDto]:
     return results
 
 
+def is_pg_database_build(cnx) -> bool:
+    try:
+        path = '../../dbinit/init.sql'
+        with pydapper.connect(cnx) as commands:
+            with open(path, 'w') as file:
+                sql_init = file.read()
+                commands.execute(sql_init)
+                commands.execute(sql_stm.insert_global_channel)
+    except Exception as e:
+        print(e)
+        return False
+    return True
+
+
+def is_sqlite_database_build(cnx) -> bool:
+    try:
+        file_name = 'messenger.sqlite'
+        if os.path.exists(file_name):
+            os.remove(file_name)
+        file = open(file_name, 'w')
+        file.close()
+        with pydapper.connect(cnx) as commands:
+            commands.execute(sql_stm.create_table_user_account)
+            commands.execute(sql_stm.create_table_channel)
+            commands.execute(sql_stm.create_table_user_account_in_channel)
+            commands.execute(sql_stm.create_table_message)
+            commands.execute(sql_stm.insert_global_channel)
+    except Exception as e:
+        print(e)
+        return False
+    return True
+
+
+
 class MessengerRepository:
     def __init__(self):
-        self.connection = "postgresql+psycopg2://postgres:mysecretpassword@127.0.0.1:5433"
+        try:
+            cnx = os.environ["POSTGRES_CONNECTION_STRING"]
+            self.connection = cnx
+        except KeyError:
+            print("Es wurde kein Connectionstring in den Umgebungsvariablen gefunden.")
+            self.connection = "postgresql+psycopg2://postgres:mysecretpassword@127.0.0.1:5432"
+        self.init_database()
+
+    def init_database(self):
+        if not is_pg_database_build(self.connection):
+            print("Keine Postgresdatenbank gefunden. Erstelle lokales sqlite Fallback.")
+            self.connection = f"sqlite+sqlite3://messenger.sqlite"
+            if not is_sqlite_database_build(self.connection):
+                raise Exception("Die Erstellung der sqlite Datenbank ist fehlgeschlagen.")
 
     def is_new_user_created(self, user_name, password) -> bool:
         with pydapper.connect(self.connection) as commands:
@@ -152,8 +205,9 @@ class MessengerRepository:
     def is_new_message_created(self, sender, content, chn=None, dm=None) -> (bool, MessageDto | None):
         with pydapper.connect(self.connection) as commands:
             result = commands.query_first(
-                "insert into message (sender_fk, receiver_fk, channel_name_fk, content) "
-                "values (?1?, ?2?, ?3?, ?4?) RETURNING id;", param={"1": sender, "2": dm, "3": chn, "4": content}
+                "insert into message (sender_fk, receiver_fk, channel_name_fk, content, id) "
+                "values (?1?, ?2?, ?3?, ?4?, ?5?) RETURNING id;",
+                param={"1": sender, "2": dm, "3": chn, "4": content, "5": str(uuid.UUID)}
             )
             message_id = result['id']
         if message_id is not None:

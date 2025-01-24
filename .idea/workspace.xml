@@ -5,16 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="61d9635b-2543-40f9-a9c4-a395da0d92e3" name="Changes" comment="- final version">
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/sqlite_init_commands.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dbinit/initsqlite.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dbinit/messenger.sqlite" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/start_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/requirements.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/events.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/application/websocketConnector.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/application/websocketConnector.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/messenger/messenger.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/messenger/messenger.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/messenger_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/messenger_repository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbinit/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/dbinit/init.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,53 +49,55 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;JavaScript Debug.index.html (1).executor&quot;: &quot;Run&quot;,
-    &quot;JavaScript Debug.index.html (2).executor&quot;: &quot;Run&quot;,
-    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
-    &quot;Python.call_example.executor&quot;: &quot;Run&quot;,
-    &quot;Python.data_base_models.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ggggg.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main (1).executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.tcp_cient.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.tcp_client.executor&quot;: &quot;Run&quot;,
-    &quot;Python.tcp_client_receiver.executor&quot;: &quot;Run&quot;,
-    &quot;Python.tcp_server_side.executor&quot;: &quot;Run&quot;,
-    &quot;Python.testing_things.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;bug-fixes&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/heili/PycharmProjects/messenger/frontend/src&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "JavaScript Debug.index.html (1).executor": "Run",
+    "JavaScript Debug.index.html (2).executor": "Run",
+    "JavaScript Debug.index.html.executor": "Run",
+    "Python.call_example.executor": "Run",
+    "Python.data_base_models.executor": "Run",
+    "Python.ggggg.executor": "Run",
+    "Python.main (1).executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.tcp_cient.executor": "Debug",
+    "Python.tcp_client.executor": "Run",
+    "Python.tcp_client_receiver.executor": "Run",
+    "Python.tcp_server_side.executor": "Run",
+    "Python.testing_things.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "bug-fixes",
+    "last_opened_file_path": "C:/Users/heili/PycharmProjects/messenger/dbinit",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql",
+      "sqlite"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\heili\PycharmProjects\messenger\dbinit" />
       <recent name="C:\Users\heili\PycharmProjects\messenger\frontend\src" />
       <recent name="C:\Users\heili\PycharmProjects\messenger\frontend\src\messenger" />
       <recent name="C:\Users\heili\PycharmProjects\messenger\backend\src" />
       <recent name="C:\Users\heili\PycharmProjects\messenger" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\heili\PycharmProjects\messenger" />
+      <recent name="C:\Users\heili\PycharmProjects\messenger\backend" />
       <recent name="C:\Users\heili\PycharmProjects\messenger\frontend\src\application" />
       <recent name="C:\Users\heili\PycharmProjects\messenger\frontend\src" />
-      <recent name="C:\Users\heili\PycharmProjects\messenger" />
       <recent name="C:\Users\HannesRoever\PycharmProjects\messenger\exp" />
-      <recent name="C:\Users\HannesRoever\PycharmProjects\messenger\backend\src" />
     </key>
   </component>
   <component name="RunManager" selected="Python.main">
@@ -230,6 +232,13 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SQLScriptSettings">
+    <option name="matrix">
+      <map>
+        <entry key="POSTGRES.CreateComplete" value="CreateOrReplace=1, CreateIfNotExists=1, Owner=1, Grants=1" />
+      </map>
+    </option>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -282,7 +291,7 @@
       <workItem from="1737648092998" duration="15000" />
       <workItem from="1737653752509" duration="5059000" />
       <workItem from="1737726721510" duration="3010000" />
-      <workItem from="1737743707301" duration="8310000" />
+      <workItem from="1737743707301" duration="14916000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -452,7 +461,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737738209763</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="- final version">
+      <option name="closed" value="true" />
+      <created>1737752258375</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1737752258375</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -530,7 +547,7 @@
     <SUITE FILE_PATH="coverage/messenger$tcp_client.coverage" NAME="tcp_client Coverage Results" MODIFIED="1727972411437" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/messenger$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1731681166113" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/prototype" />
     <SUITE FILE_PATH="coverage/messenger$tcp_cient.coverage" NAME="tcp_client Coverage Results" MODIFIED="1727892160280" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/messenger$main.coverage" NAME="main Coverage Results" MODIFIED="1737750341876" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/src" />
+    <SUITE FILE_PATH="coverage/messenger$main.coverage" NAME="main Coverage Results" MODIFIED="1737759090147" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/src" />
     <SUITE FILE_PATH="coverage/messenger$tcp_server_side.coverage" NAME="tcp_server_side Coverage Results" MODIFIED="1728313273271" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/messenger$call_example.coverage" NAME="call_example Coverage Results" MODIFIED="1736526844884" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/src" />
     <SUITE FILE_PATH="coverage/messenger$ggggg.coverage" NAME="ggggg Coverage Results" MODIFIED="1736525892473" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/src" />
