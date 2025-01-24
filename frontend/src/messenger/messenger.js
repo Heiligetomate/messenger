@@ -149,16 +149,6 @@ function logout(){
   return "";
 }
 
-function scrollToBottom(childContainer, parentContainer){
-  let child = document.getElementById(childContainer);
-  let height = child.clientHeight;
-  let parent = document.getElementById(parentContainer);
-  console.log(height);
-  parent.scrollTo({
-  top: height + 500,
-  behavior: "smooth",
-});
-}
 
 function hideAndDisplay(hideElementIds, displayElementId){
   for (const x of hideElementIds){
@@ -179,11 +169,6 @@ function onMessageReceived({data}) {
   const event = JSON.parse(data);
   console.log(event.type)
   switch (event.type) {
-
-    case "users":
-      const users = `${event.users} user${event.users === 1 ? "" : "s"}`; //ahhhhhh das ist müll ab in die tonne
-      document.querySelector(".users").textContent = users;
-      break;
 
     case EventDefinitions.onChatMessageReceived:
       console.log("message received in channel: " + event.payload)

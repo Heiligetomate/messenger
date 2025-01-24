@@ -3,91 +3,22 @@ import json
 import logging
 import uuid
 
-import jsonpickle
 
 from websockets.asyncio.server import broadcast, serve, ServerConnection
-from user_account import User
 from client import Client
-from channel import Channel
 from messenger_repository import MessengerRepository
-from messagedto import MessageDto
 import definitions as df
+import events
 
 
 cnx = MessengerRepository()
-
-
-def users_event() -> str:
-    return json.dumps({"type": "users", "users": len(users())}) #AB IN DIE TONNE
-
-
-def login_event(success: bool, user_name="") -> str:
-    if success:
-        return json.dumps({"type": df.SEND_USER_LOGIN_RESULT, "user": user_name, "success": True})
-    return json.dumps({"type": df.SEND_USER_LOGIN_RESULT, "success": "false"})
-
-
-def login_failed_event() -> str:
-    return json.dumps({"type": df.SEND_USER_LOGIN_RESULT, "success": False})
-
-
-def registration_event(is_success) -> str:
-    return json.dumps({"type": df.SEND_USER_REGISTRATION_RESULT, "is_success": is_success})
-
-
-def messages_event(msg: MessageDto) -> str:
-    json_message = jsonpickle.encode(msg)
-    return json.dumps({"type": df.SEND_CHAT_MESSAGE, "payload": json_message})
-
-
-def init_event(messages: list[MessageDto], channel_names: list[str]) -> str:
-    messages = jsonpickle.encode(messages)
-    return json.dumps({"type": df.SEND_INIT, "messages": messages, "channelNames": channel_names})
-
-
-def channel_messages_event(messages: list[MessageDto]) -> str:
-    json_string = jsonpickle.encode(messages)
-    return json.dumps({"type": df.SEND_CHANNEL_MESSAGES, "messages": json_string})
-
-
-def new_channel_event(success, channel_name=None, fail_message="") -> str:
-    if success:
-        return json.dumps({"type": df.SEND_CHANNEL_CREATED_RESULT, "success": True, "channelName": channel_name})
-    else:
-        return json.dumps({"type": df.SEND_CHANNEL_CREATED_RESULT, "success": False, "failMessage": fail_message})
-
-
-def join_channel_event(success, channel_name=None, fail_message="") -> str:
-    if success:
-        return json.dumps({"type": df.SEND_USER_JOIN_CHANNEL_RESULT, "success": True, "channelName": channel_name})
-    else:
-        return json.dumps({"type": df.SEND_USER_JOIN_CHANNEL_RESULT, "success": False, "failMessage": fail_message})
-
-
-def delete_message_event(success, message_id):
-    return json.dumps({"type": df.SEND_MESSAGE_DELETE_RESULT, "success": success, "message_id": message_id})
-
-
-def find_channels(user_channels) -> list[Channel]:
-    valid_channels = []
-    for channel in channels:
-        for u_channel in user_channels:
-            if channel.name == u_channel:
-                valid_channels.append(channel)
-    return valid_channels
-
-
-def find_channel(channel_name) -> Channel:
-    for channel in channels:
-        if channel.name == channel_name:
-            return channel
 
 
 def registration(event, websocket) -> None:
     user_name = event["user"]
     password = event["password"]
     is_success = cnx.is_new_user_created(user_name, password)
-    broadcast([websocket], registration_event(is_success))
+    broadcast([websocket], events.send_registration_result(is_success))
 
 
 def login(event, websocket) -> None:
@@ -96,10 +27,10 @@ def login(event, websocket) -> None:
     print(f'login event send to ws {websocket.id}')
     is_found, user = cnx.is_user_found(user_name)
     if is_found and password == user.password:
-        broadcast([websocket], login_event(True, user_name=user_name))
+        broadcast([websocket], events.send_login_result(True, user_name=user_name))
     else:
         print("Invalid credentials or username not found")
-        broadcast([websocket], login_event(False))
+        broadcast([websocket], events.send_login_result(False))
 
 
 def message(event) -> None:
@@ -107,7 +38,7 @@ def message(event) -> None:
     if is_created:
         print(msg)
         user_name: list = cnx.get_all_users_by_channel(event["channel"])
-        message_content = messages_event(msg)
+        message_content = events.send_chat_message(msg)
         broadcast(get_websockets_by_user_name(user_name), message_content)
     else:
         print("Message could not be created")
@@ -117,29 +48,7 @@ def init(event, websocket) -> None:
     CLIENTS[websocket.id].username = event["user"]
     valid_channels = cnx.get_all_channels_by_user_name(CLIENTS[websocket.id].username)
     messages = cnx.get_all_messages_by_channel_name("global")
-    broadcast([websocket], init_event(messages, valid_channels))
-
-
-def users() -> set:
-    global CLIENTS
-    res = set(map(lambda x: x.websocket, CLIENTS.values()))
-    return res
-
-
-def user_names() -> set:
-    global CLIENTS
-    res = set(map(lambda x: x.username, CLIENTS.values()))
-    return res
-
-
-#def get_users_with_channel(channel: str) -> list:
-#    valid_users = []
-#    for k, v in CLIENTS.items():
-#        for c in v.channels:
-#            print(f'channel to compare: {c}')
-#            if c.name == channel:
-#                valid_users.append(v.websocket)
-#    return valid_users
+    broadcast([websocket], events.send_init(messages, valid_channels))
 
 
 def get_websockets_by_user_name(user_name: list) -> list:
@@ -151,23 +60,12 @@ def get_websockets_by_user_name(user_name: list) -> list:
                 break
     return websockets
 
-# def join_channel(event, websocket) -> None:
-#    CLIENTS[websocket.id].channels.append(event["channel"])
-#    CLIENTS[websocket.id].check_for_double_channels()
-
-
-def get_websocket_with_name(name):
-    for k, v in CLIENTS.items():
-        if v.username == name:
-            return v.websocket
-    return None
-
 
 def join_channel(event, websocket) -> None:
     is_found, channel = cnx.is_channel_found(event["currentChannel"])
     if is_found:
         messages = cnx.get_all_messages_by_channel_name(channel.channel_name)
-        broadcast([websocket], channel_messages_event(messages))
+        broadcast([websocket], events.send_channel_messages(messages))
 
 
 def join_new_channel(event, websocket) -> None:
@@ -192,9 +90,9 @@ def join_new_channel(event, websocket) -> None:
         fail_message = "Channel does not exist!"
 
     if success:
-        broadcast([websocket], join_channel_event(True, channel_name=channel_name))
+        broadcast([websocket], events.send_channel_join_result(True, channel_name=channel_name))
     else:
-        broadcast([websocket], join_channel_event(False, fail_message=fail_message))
+        broadcast([websocket], events.send_channel_join_result(False, fail_message=fail_message))
 
 
 def new_channel(event, websocket) -> None:
@@ -204,33 +102,24 @@ def new_channel(event, websocket) -> None:
     is_public = event["isPublic"]
     if cnx.is_new_channel_created(channel_name, channel_password, is_public):
         cnx.is_joined_channel(channel_name, user)
-    broadcast([websocket], new_channel_event(True, channel_name=channel_name))
+    broadcast([websocket], events.send_new_channel_created_result(True, channel_name=channel_name))
 
 
-def delete_message(event, websocket) -> None:
+def delete_message(event) -> None:
     message_id = event["messageId"]
     success = cnx.is_message_deleted_by_id(message_id)
     usernames: list = cnx.get_all_users_by_channel(event["channel"])
     websockets = get_websockets_by_user_name(usernames)
-    message_event = delete_message_event(success, message_id)
+    message_event = events.send_delete_message_result(success, message_id)
     broadcast(websockets, message_event)
 
-
-VALUE = 0
-
-
-global_channel = Channel("global", "public")
-channels = [global_channel]
-
-
-accounts: list[User] = []
 
 logging.basicConfig()
 CLIENTS: dict[uuid.UUID, Client] = {}
 
 
 async def on_message_receive(websocket: ServerConnection) -> None:
-    global VALUE, CLIENTS
+    global CLIENTS
     try:
         # USERS.add(websocket)
         async for msg in websocket:
@@ -240,34 +129,36 @@ async def on_message_receive(websocket: ServerConnection) -> None:
             else:
                 CLIENTS[websocket.id] = Client("", websocket)
                 print(f'client added: {websocket.id}')
+
             event = json.loads(msg)
+            action = event["action"]
 
             if event["action"] == df.ON_CONNECT:
                 print("new client connected :-)")
 
-            elif event["action"] == df.ON_USER_REGISTER:
+            elif action == df.ON_USER_REGISTER:
                 registration(event, websocket)
 
-            elif event["action"] == df.ON_USER_LOGIN:
+            elif action == df.ON_USER_LOGIN:
                 login(event, websocket)
 
-            elif event["action"] == df.ON_CHAT_MESSAGE_RECEIVED:
+            elif action == df.ON_CHAT_MESSAGE_RECEIVED:
                 message(event)
 
-            elif event["action"] == df.ON_INIT_REQUEST_RECEIVED:
+            elif action == df.ON_INIT_REQUEST_RECEIVED:
                 init(event, websocket)
 
-            elif event["action"] == df.ON_CURRENT_CHANNEL_CHANGED:
+            elif action == df.ON_CURRENT_CHANNEL_CHANGED:
                 join_channel(event, websocket)
 
-            elif event["action"] == df.ON_CHANNEL_CREATED:
+            elif action == df.ON_CHANNEL_CREATED:
                 new_channel(event, websocket)
 
-            elif event["action"] == df.ON_CHANNEL_JOINED:
+            elif action == df.ON_CHANNEL_JOINED:
                 join_new_channel(event, websocket)
 
-            elif event["action"] == df.DELETE_MESSAGE:
-                delete_message(event, websocket)
+            elif action == df.DELETE_MESSAGE:
+                delete_message(event)
 
             else:
                 logging.error("unsupported event: %s", event)
@@ -280,7 +171,6 @@ async def on_message_receive(websocket: ServerConnection) -> None:
             del CLIENTS[websocket.id]
         except KeyError as e:
             print(f"ERROR: {e}")
-        # print(f"after {len(users())}")
 
 
 async def main():

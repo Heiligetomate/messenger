@@ -17,7 +17,7 @@ def map_to_strings_from_dictionary(values: list[dict[Any]]) -> list[str]:
 
 
 def map_to_dto(src: Message) -> MessageDto:
-    ts = f'{src.time_stamp.strftime("%Y%m%dT%H%M%SZ")}'
+    ts = f'{src.time_stamp.strftime("%H:%M")}'
     return MessageDto(src.content, src.sender_fk, ts, src.id, src.channel_id)
 
 

@@ -54,15 +54,15 @@ function onMessageReceived({data}){
         break;
 
       case EventDefinitions.onUserLoginResult:
-          console.log(event)
-          if (event.success === true){
-              save(true, event.user)
-              goToRoute(messengerUrl);
-          }
-          else {
-              window.alert("Wrong username or password")
-          }
-          break;
+        console.log(event)
+        if (event.success === true){
+            save(true, event.user)
+            goToRoute(messengerUrl);
+        }
+        else {
+            window.alert("Wrong username or password")
+        }
+        break;
     default:
       console.error("unsupported event", event);
   }
