@@ -1,3 +1,4 @@
+init = """
 create table if not exists user_account
 (
     user_name varchar(20)  default 'DEFAULT'::character varying not null
@@ -47,4 +48,5 @@ create table if not exists message
             references channel
             on delete cascade
 );
+"""
 

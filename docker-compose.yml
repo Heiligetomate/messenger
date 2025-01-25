@@ -1,21 +1,23 @@
-version: '3.8'
-
 services:
   websocket-service:
     build:
       context: ./backend
     container_name: messenger-backend
-    image: heiligetomate/messenger-backend:latest
+    image: heiligetomate/messenger-backend:rc1
     ports:
       - "6789:6789"
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_CONNECTION_STRING=postgresql+psycopg2://postgres:mysecretpassword@db:5432
 
   frontend:
     build:
       context: ./frontend
     container_name: messenger-frontend
-    image: heiligetomate/messenger-frontend:latest
+    image: heiligetomate/messenger-frontend:rc1
     ports:
-      - "8080:80"
+      - "7777:80"
     depends_on:
       - websocket-service
     environment:
@@ -32,7 +34,7 @@ services:
       - ./dbinit/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./postgres-data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - "5432:5432"
 
 volumes:
   postgres-data:

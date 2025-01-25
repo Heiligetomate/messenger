@@ -5,15 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="61d9635b-2543-40f9-a9c4-a395da0d92e3" name="Changes" comment="- final version">
-      <change afterPath="$PROJECT_DIR$/backend/src/sqlite_init_commands.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbinit/initsqlite.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbinit/messenger.sqlite" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/start_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/messenger_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/messenger_repository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbinit/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/dbinit/init.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbinit/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/init_postgres_schema.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbinit/messenger.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/application/websocketConnector.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/application/websocketConnector.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -79,8 +78,8 @@
   },
   "keyToStringList": {
     "DatabaseDriversLRU": [
-      "postgresql",
-      "sqlite"
+      "sqlite",
+      "postgresql"
     ]
   }
 }]]></component>
@@ -93,11 +92,11 @@
       <recent name="C:\Users\heili\PycharmProjects\messenger" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\heili\PycharmProjects\messenger" />
+      <recent name="C:\Users\heili\PycharmProjects\messenger\backend\src" />
+      <recent name="C:\Users\heili\PycharmProjects\messenger\dbinit" />
       <recent name="C:\Users\heili\PycharmProjects\messenger\backend" />
+      <recent name="C:\Users\heili\PycharmProjects\messenger" />
       <recent name="C:\Users\heili\PycharmProjects\messenger\frontend\src\application" />
-      <recent name="C:\Users\heili\PycharmProjects\messenger\frontend\src" />
-      <recent name="C:\Users\HannesRoever\PycharmProjects\messenger\exp" />
     </key>
   </component>
   <component name="RunManager" selected="Python.main">
@@ -292,6 +291,7 @@
       <workItem from="1737653752509" duration="5059000" />
       <workItem from="1737726721510" duration="3010000" />
       <workItem from="1737743707301" duration="14916000" />
+      <workItem from="1737801456260" duration="8913000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />

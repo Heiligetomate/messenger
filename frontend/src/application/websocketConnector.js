@@ -3,9 +3,10 @@ export class WebsocketConnector {
     #ws = null;
     websocket(){
         if (this.#ws == null) {
-            let url = window.location.hostname === "localhost" || "127.0.0.1"
+            let url = window.location.hostname === "localhost"
                 ? `http://localhost:6789`
                 : `wss://api.${window.location.hostname}`;
+            console.log("connect to " + url);
             this.#ws = new WebSocket(url);
             this.connect();
         }
