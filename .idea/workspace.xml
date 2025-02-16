@@ -4,16 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="61d9635b-2543-40f9-a9c4-a395da0d92e3" name="Changes" comment="- final version">
+    <list default="true" id="61d9635b-2543-40f9-a9c4-a395da0d92e3" name="Changes" comment="- konfiguration fixes for the server">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/messenger_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/messenger_repository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbinit/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/init_postgres_schema.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbinit/messenger.sqlite" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/application/websocketConnector.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/application/websocketConnector.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,41 +41,41 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "JavaScript Debug.index.html (1).executor": "Run",
-    "JavaScript Debug.index.html (2).executor": "Run",
-    "JavaScript Debug.index.html.executor": "Run",
-    "Python.call_example.executor": "Run",
-    "Python.data_base_models.executor": "Run",
-    "Python.ggggg.executor": "Run",
-    "Python.main (1).executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.tcp_cient.executor": "Debug",
-    "Python.tcp_client.executor": "Run",
-    "Python.tcp_client_receiver.executor": "Run",
-    "Python.tcp_server_side.executor": "Run",
-    "Python.testing_things.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "bug-fixes",
-    "last_opened_file_path": "C:/Users/heili/PycharmProjects/messenger/dbinit",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JavaScript Debug.index.html (1).executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.index.html (2).executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
+    &quot;Python.call_example.executor&quot;: &quot;Run&quot;,
+    &quot;Python.data_base_models.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ggggg.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main (1).executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.tcp_cient.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.tcp_client.executor&quot;: &quot;Run&quot;,
+    &quot;Python.tcp_client_receiver.executor&quot;: &quot;Run&quot;,
+    &quot;Python.tcp_server_side.executor&quot;: &quot;Run&quot;,
+    &quot;Python.testing_things.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;bug-fixes&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/heili/PycharmProjects/messenger/dbinit&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "sqlite",
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlite&quot;,
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\heili\PycharmProjects\messenger\dbinit" />
@@ -291,7 +284,11 @@
       <workItem from="1737653752509" duration="5059000" />
       <workItem from="1737726721510" duration="3010000" />
       <workItem from="1737743707301" duration="14916000" />
-      <workItem from="1737801456260" duration="8913000" />
+      <workItem from="1737801456260" duration="9597000" />
+      <workItem from="1737829545059" duration="14000" />
+      <workItem from="1739536292608" duration="5003000" />
+      <workItem from="1739623006153" duration="1764000" />
+      <workItem from="1739718166670" duration="8000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -469,7 +466,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737752258375</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="- konfiguration fixes for the server">
+      <option name="closed" value="true" />
+      <created>1737822065637</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1737822065637</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -503,7 +508,8 @@
     <MESSAGE value="- refactor" />
     <MESSAGE value="- refactor names" />
     <MESSAGE value="- final version" />
-    <option name="LAST_COMMIT_MESSAGE" value="- final version" />
+    <MESSAGE value="- konfiguration fixes for the server" />
+    <option name="LAST_COMMIT_MESSAGE" value="- konfiguration fixes for the server" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -2,13 +2,13 @@ import asyncio
 import json
 import logging
 import uuid
-
-
 from websockets.asyncio.server import broadcast, serve, ServerConnection
+
+
+import events
+import definitions as df
 from client import Client
 from messenger_repository import MessengerRepository
-import definitions as df
-import events
 
 
 cnx = MessengerRepository()

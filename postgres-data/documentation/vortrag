@@ -1,0 +1,178 @@
+---
+
+## Gliederung
+
+<!-- element style="font-size: 1em; font-family:JetBrains Mono; color: #1976d3;" -->
+
+- Einleitung
+- Übersicht der Komponenten
+- Konkretes Beispiel: Datenfluss beim Nutzerlogin
+- Exkurs Datenbank
+- Demo
+- Probleme
+- Fazit
+
+
+<!-- element style="font-size: 0.75em;" -->
+
+
+
+---
+
+## Einleitung
+
+<!-- element style="font-size: 1em; font-family:JetBrains Mono; color: #1976d3;" -->
+- warum das Thema
+- was ist das Produkt:
+	- Messenger
+	- Nachrichten schreiben und löschen
+	- Kanäle erstellen und beitreten
+- welche Tool benutzt:
+	- Pycharm
+	- Github
+	- Docker
+
+
+<!-- element style="font-size: 0.75em;" -->
+---
+## Übersicht der Komponenten
+<!-- element style="font-size: 1em; font-family:JetBrains Mono; color: #1976d3;" -->
+- Webanwendung → Schichtenarchitektur
+	- Frontend (JavaScript, Css, Html)
+	- Backend (Python)
+	- Datenbank (Postgres)
+
+
+<!-- element style="font-size: 0.75em;" -->
+---
+## Datenfluss beim Nutzerlogin
+<!-- element style="font-size: 1em; font-family:JetBrains Mono; color: #1976d3;" -->
+
+ - 1. Nutzereingabe
+ - 2. Backend empfängt Nachricht
+ - 3a. Daten werden validiert
+ - 3b. Datenbankabfrage
+ - 4. Backend schickt  Nachricht ausgehend von DB Ergebnis
+ - 5. Frontend empfängt die Nachricht
+ - 6. Der Nutzer sieht das Ergebnis des Logins
+
+
+<!-- element style="font-size: 0.75em;" -->
+
+```mermaid
+flowchart LR
+    A([Nutzer])
+    B[Frontend]
+    C[Backend]
+    D[(Datenbank)]
+    A -->|1| B -->|2| C -->|3| D -->|4| C -->|5| B -->|6| A
+```
+<!-- element style="size: 2;" -->
+---
+## 1. Nutzereingabe (Frontend)
+<!-- element style="font-size: 1em; font-family:JetBrains Mono; color: #1976d3;" -->
+
+```js
+document.getElementById("confirm-login").addEventListener("click", () => {
+    let message = getUserAndPassword(ws, EventDefinitions.sendUserLoginRequest, "login-name", "login-password");
+    ws.send(message);
+});
+```
+
+
+---
+
+## 2. Backend empfängt Nachricht
+<!-- element style="font-size: 1em; font-family:JetBrains Mono; color: #1976d3;" -->
+
+```python
+elif action == df.ON_USER_LOGIN:
+    login(event, websocket)
+```
+---
+## 3a. Daten werden validiert
+<!-- element style="font-size: 1em; font-family:JetBrains Mono; color: #1976d3;" -->
+
+```python
+is_found, user = cnx.is_user_found(user_name)
+```
+---
+## 3b. Datenbankabfrage
+<!-- element style="font-size: 1em; font-family:JetBrains Mono; color: #1976d3;" -->
+
+```python
+def is_user_found(self, user_name) -> (bool, UserAccount | None):
+    print(f'check user with db connection: {self.connection}')
+    with pydapper.connect(self.connection) as commands:
+        try:
+            user = commands.query_single("select user_name, password from user_account where user_name=?1?;", model=UserAccount, param={"1": user_name})
+            return True, user
+        except NoResultException:
+            return False, None
+```
+---
+## 4. Backend schickt  Nachricht ausgehend von DB Ergebnis
+<!-- element style="font-size: 1em; font-family:JetBrains Mono; color: #1976d3;" -->
+```python
+if is_found and password == user.password:
+    broadcast([websocket], events.send_login_result(True, user_name=user_name))
+    print(events.send_login_result(True, user_name=user_name))
+```
+---
+## 5. Frontend empfängt die Nachricht
+<!-- element style="font-size: 1em; font-family:JetBrains Mono; color: #1976d3;" -->
+
+```js
+case EventDefinitions.onUserLoginResult:
+  console.log(event)
+  if (event.success){
+      save(true, event.user)
+      window.location.replace(messengerUrl);
+
+  }
+  else {
+      window.alert("Wrong username or password")
+  }
+  break;
+```
+
+## 6. Der Nutzer sieht das Ergebnis des Logins
+<!-- element style="font-size: 1em; font-family:JetBrains Mono; color: #1976d3;" -->
+---
+## Exkurs Datenbank
+<!-- element style="font-size: 1em; font-family:JetBrains Mono; color: #1976d3;" -->
+
+- 4 Tabellen
+- eine Verbindungstabelle
+- Tabellen:
+	- Nachricht
+	- Nutzer
+	- Kanal
+	- Verbindungstabelle
+
+<!-- element style="font-size: 0.75em;" -->
+---
+- Beziehungen:
+	- Nutzer : Nachricht => 1:n
+	- Kanal : Nachricht => 1:n
+	- Nutzer : Kanal => n:n
+- Verbindungstabelle
+	- Ein Nutzer kann in mehreren Kanälen sein, wobei ein Kanal aber auch mehrere Nutzer beinhalten kann
+	- lässt sich in einer Tabelle nicht darstellen
+
+<!-- element style="font-size: 0.75em;" -->
+---
+## Probleme
+<!-- element style="font-size: 1em; font-family:JetBrains Mono; color: #1976d3;" -->
+- schlechte Kenntnisse von Js
+	- oft lange Suche nach Fehlern
+
+<!-- element style="font-size: 0.75em;" -->
+---
+## Fazit
+<!-- element style="font-size: 1em; font-family:JetBrains Mono; color: #1976d3;" -->
+- hat Spaß gemacht
+- ich habe viel neues gelernt
+- nächstes mal sollte ich mir meine Zeit besser einteilen
+
+<!-- element style="font-size: 0.75em;" -->
